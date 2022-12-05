@@ -1,6 +1,7 @@
 package com.example.planesavingpassengers;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -37,6 +38,8 @@ public class GameActivity extends AppCompatActivity {
     private ManagerActivity gameManager;
     private Timer timer;
     long startTime = 0;
+
+//    public final MediaPlayer crowd_panic = MediaPlayer.create(this, R.raw.crowd_panic);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
