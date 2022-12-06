@@ -1,6 +1,7 @@
 package com.example.planesavingpassengers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -54,6 +55,11 @@ public class GameActivity extends AppCompatActivity {
         gameManager = new ManagerActivity(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, BOARD_LIMIT);
     }
 
+    public void PlayBackgroundSound(View view) {
+        Intent intent = new Intent(GameActivity.this, BackgroundSoundService.class);
+        startService(intent);
+    }
+
     private void findViews() {
         gameActivity_FAB_left = findViewById(R.id.gameActivity_FAB_left);
         gameActivity_FAB_right = findViewById(R.id.gameActivity_FAB_right);
@@ -98,6 +104,9 @@ public class GameActivity extends AppCompatActivity {
      * @param direction = the direction of the plane
      */
     private void movePlane(String direction) {
+//        // make sound
+//        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.relieved_sigh);
+//        mediaPlayer.start();
         deleteImage(gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
         if (direction.equals(RIGHT_DIRECTION))
             gameManager.movePlane(STEP_RIGHT_OF_PLANE);
@@ -142,8 +151,12 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void crashToast() {
-        Toast.makeText(this, "Birds attacked you", Toast.LENGTH_LONG)
+    private void crashToastAndSound() {
+        //Make sound
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.crowd_panic);
+        mediaPlayer.start();
+        //Toast
+        Toast.makeText(this, "Birds attacked you!", Toast.LENGTH_LONG)
                 .show();
     }
 
@@ -191,7 +204,7 @@ public class GameActivity extends AppCompatActivity {
                         if (gameManager.getPlane().getNumOfCrash() != 0) {
                             game_IMG_hearts[game_IMG_hearts.length - gameManager.getPlane().getNumOfCrash()].setVisibility(View.INVISIBLE);
                         }
-                        crashToast();
+                        crashToastAndSound();
                         vibrateAll();
 
                         gameManager.clearAllObjects();
