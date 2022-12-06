@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -36,12 +35,13 @@ public class MenuActivity extends AppCompatActivity {
 
     private void menuButtons() {
         menu_LBL_startGame.setOnClickListener(v -> openGameActivity());
-        menu_LBL_scores.setOnClickListener(v -> openScoreAndMapActivity());
+        menu_LBL_scores.setOnClickListener(v -> openScoresActivity());
     }
 
-    private void openScoreAndMapActivity() {
-        Toast.makeText(this, "Birds attacked you", Toast.LENGTH_LONG)
-                .show();
+    private void openScoresActivity() {
+        Intent scoresIntent = new Intent(this, ScoresActivity.class);
+        startActivity(scoresIntent);
+        finish();
     }
 
     private void openGameActivity() {

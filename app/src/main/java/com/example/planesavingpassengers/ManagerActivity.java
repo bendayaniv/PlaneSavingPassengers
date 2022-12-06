@@ -43,7 +43,7 @@ public class ManagerActivity {
                 plane.setX(planeOnX - 1);
             }
         } else if (planeMove == 1) {
-            if (plane.getX() != 2) {
+            if (plane.getX() != 4) {
                 plane.setX(planeOnX + 1);
             }
         }
@@ -57,7 +57,7 @@ public class ManagerActivity {
     public void moveObjectsDown(int boardLimit, int xScale) {
         for (int i = objectsBoard.length - 1; i >= 0; i--) {
             for (int j = 0; j < objectsBoard[i].length; j++) {
-                if (objectsBoard[i][j] != null && objectsBoard[i][j].getY() == boardLimit) {
+                if (objectsBoard[i][j] != null && objectsBoard[i][j].getY() == boardLimit + 1) {
                     objectsBoard[i][j] = null;
                 } else if (objectsBoard[i][j] != null) {
                     int tmpY = objectsBoard[i][j].getY() + 1;

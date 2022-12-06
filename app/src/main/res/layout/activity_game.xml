@@ -321,6 +321,196 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_0_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_1_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_2_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_3_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_4_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_5_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_6_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_7_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_8_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_9_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_10_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_11_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_0_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_1_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_2_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_3_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_4_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_5_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_6_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_7_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_8_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_9_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_10_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/game_IMG_11_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:scaleType="fitXY" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -358,5 +548,19 @@
 
 
     </LinearLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/game_LBL_score"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="000"
+        android:textSize="32sp"
+        android:fontFamily="monospace"
+        />
 
 </RelativeLayout>

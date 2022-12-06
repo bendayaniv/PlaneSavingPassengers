@@ -20,9 +20,9 @@ import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity {
 
-    private final int DELAY = 1000;
+    private final int DELAY = /*1000*/500;
     private final int Y_LENGTH = 12;
-    private final int X_LENGTH = 3;
+    private final int X_LENGTH = 5;
     private final int BOARD_LIMIT = 10;
     private final int DEFAULT_X_FOR_PLANE = X_LENGTH / 2;
     private final int STEP_RIGHT_OF_PLANE = 1;
@@ -57,18 +57,18 @@ public class GameActivity extends AppCompatActivity {
     private void findViews() {
         gameActivity_FAB_left = findViewById(R.id.gameActivity_FAB_left);
         gameActivity_FAB_right = findViewById(R.id.gameActivity_FAB_right);
-        gameBoard = new ShapeableImageView[][]{{findViewById(R.id.game_IMG_0_0), findViewById(R.id.game_IMG_0_1), findViewById(R.id.game_IMG_0_2)},
-                {findViewById(R.id.game_IMG_1_0), findViewById(R.id.game_IMG_1_1), findViewById(R.id.game_IMG_1_2)},
-                {findViewById(R.id.game_IMG_2_0), findViewById(R.id.game_IMG_2_1), findViewById(R.id.game_IMG_2_2)},
-                {findViewById(R.id.game_IMG_3_0), findViewById(R.id.game_IMG_3_1), findViewById(R.id.game_IMG_3_2)},
-                {findViewById(R.id.game_IMG_4_0), findViewById(R.id.game_IMG_4_1), findViewById(R.id.game_IMG_4_2)},
-                {findViewById(R.id.game_IMG_5_0), findViewById(R.id.game_IMG_5_1), findViewById(R.id.game_IMG_5_2)},
-                {findViewById(R.id.game_IMG_6_0), findViewById(R.id.game_IMG_6_1), findViewById(R.id.game_IMG_6_2)},
-                {findViewById(R.id.game_IMG_7_0), findViewById(R.id.game_IMG_7_1), findViewById(R.id.game_IMG_7_2)},
-                {findViewById(R.id.game_IMG_8_0), findViewById(R.id.game_IMG_8_1), findViewById(R.id.game_IMG_8_2)},
-                {findViewById(R.id.game_IMG_9_0), findViewById(R.id.game_IMG_9_1), findViewById(R.id.game_IMG_9_2)},
-                {findViewById(R.id.game_IMG_10_0), findViewById(R.id.game_IMG_10_1), findViewById(R.id.game_IMG_10_2)},
-                {findViewById(R.id.game_IMG_11_0), findViewById(R.id.game_IMG_11_1), findViewById(R.id.game_IMG_11_2)}};
+        gameBoard = new ShapeableImageView[][]{{findViewById(R.id.game_IMG_0_0), findViewById(R.id.game_IMG_0_1), findViewById(R.id.game_IMG_0_2), findViewById(R.id.game_IMG_0_3), findViewById(R.id.game_IMG_0_4)},
+                {findViewById(R.id.game_IMG_1_0), findViewById(R.id.game_IMG_1_1), findViewById(R.id.game_IMG_1_2), findViewById(R.id.game_IMG_1_3), findViewById(R.id.game_IMG_1_4)},
+                {findViewById(R.id.game_IMG_2_0), findViewById(R.id.game_IMG_2_1), findViewById(R.id.game_IMG_2_2), findViewById(R.id.game_IMG_2_3), findViewById(R.id.game_IMG_2_4)},
+                {findViewById(R.id.game_IMG_3_0), findViewById(R.id.game_IMG_3_1), findViewById(R.id.game_IMG_3_2), findViewById(R.id.game_IMG_3_3), findViewById(R.id.game_IMG_3_4)},
+                {findViewById(R.id.game_IMG_4_0), findViewById(R.id.game_IMG_4_1), findViewById(R.id.game_IMG_4_2), findViewById(R.id.game_IMG_4_3), findViewById(R.id.game_IMG_4_4)},
+                {findViewById(R.id.game_IMG_5_0), findViewById(R.id.game_IMG_5_1), findViewById(R.id.game_IMG_5_2), findViewById(R.id.game_IMG_5_3), findViewById(R.id.game_IMG_5_4)},
+                {findViewById(R.id.game_IMG_6_0), findViewById(R.id.game_IMG_6_1), findViewById(R.id.game_IMG_6_2), findViewById(R.id.game_IMG_6_3), findViewById(R.id.game_IMG_6_4)},
+                {findViewById(R.id.game_IMG_7_0), findViewById(R.id.game_IMG_7_1), findViewById(R.id.game_IMG_7_2), findViewById(R.id.game_IMG_7_3), findViewById(R.id.game_IMG_7_4)},
+                {findViewById(R.id.game_IMG_8_0), findViewById(R.id.game_IMG_8_1), findViewById(R.id.game_IMG_8_2), findViewById(R.id.game_IMG_8_3), findViewById(R.id.game_IMG_8_4)},
+                {findViewById(R.id.game_IMG_9_0), findViewById(R.id.game_IMG_9_1), findViewById(R.id.game_IMG_9_2), findViewById(R.id.game_IMG_9_3), findViewById(R.id.game_IMG_9_4)},
+                {findViewById(R.id.game_IMG_10_0), findViewById(R.id.game_IMG_10_1), findViewById(R.id.game_IMG_10_2), findViewById(R.id.game_IMG_10_3), findViewById(R.id.game_IMG_10_4)},
+                {findViewById(R.id.game_IMG_11_0), findViewById(R.id.game_IMG_11_1), findViewById(R.id.game_IMG_11_2), findViewById(R.id.game_IMG_11_3), findViewById(R.id.game_IMG_11_4)}};
 
         game_IMG_hearts = new ShapeableImageView[]{
                 findViewById(R.id.game_IMG_heart1),
@@ -134,8 +134,8 @@ public class GameActivity extends AppCompatActivity {
         Object[][] board = gameManager.getBoard();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                //Checking if there is exist object in this location and if it reached to the limit he can go on the board
-                if (board[i][j] != null && board[i][j].getY() <= BOARD_LIMIT) {
+                //Checking if there is exist object in this location and if it reached to the limit he can go out of the board
+                if (board[i][j] != null && board[i][j].getY() <= BOARD_LIMIT + 1) {
                     loadImage(board[i][j].getObjectImage(), gameBoard[board[i][j].getY()][board[i][j].getX()]);
                 }
             }
