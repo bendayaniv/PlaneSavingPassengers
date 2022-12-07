@@ -2,8 +2,10 @@ package com.example.planesavingpassengers;
 
 public class Plane extends Object {
     private int numOfCrash = 0;
+    private int score = 0;
     private final int life;
     private final int explodeImage = R.drawable.explosion;
+
 
     public Plane(int lifeLength, int defaultX, int defaultY) {
         super(defaultX, defaultY, R.drawable.plane);
@@ -25,5 +27,13 @@ public class Plane extends Object {
 
     public int getLife() {
         return life;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(/*int addingScore*/) {
+        this.score += 10;
     }
 }

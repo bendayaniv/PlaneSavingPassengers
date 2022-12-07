@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,7 +26,7 @@ public class GameActivity extends AppCompatActivity {
     private final int DELAY = /*1000*/500;
     private final int Y_LENGTH = 12;
     private final int X_LENGTH = 5;
-    private final int BOARD_LIMIT = 10;
+    private final int PLANE_LINE = 10;
     private final int DEFAULT_X_FOR_PLANE = X_LENGTH / 2;
     private final int STEP_RIGHT_OF_PLANE = 1;
     private final int STEP_LEFT_OF_PLANE = -1;
@@ -35,10 +37,14 @@ public class GameActivity extends AppCompatActivity {
     private ExtendedFloatingActionButton gameActivity_FAB_right;
     private ShapeableImageView[][] gameBoard;
     private ShapeableImageView[] game_IMG_hearts;
+    private MaterialTextView game_LBL_score;
 
     private ManagerActivity gameManager;
     private Timer timer;
     long startTime = 0;
+
+    private Intent scoresIntent;
+    private Intent BackgroundSoundIntent;
 
 //    public final MediaPlayer crowd_panic = MediaPlayer.create(this, R.raw.crowd_panic);
 
@@ -50,17 +56,21 @@ public class GameActivity extends AppCompatActivity {
         //Set direction on all devices from LEFT to RIGHT
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
+        PlayBackgroundSound();
+
         findViews();
         createMovingPlaneButtons();
-        gameManager = new ManagerActivity(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, BOARD_LIMIT);
+        gameManager = new ManagerActivity(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, PLANE_LINE);
     }
 
-    public void PlayBackgroundSound(View view) {
-        Intent intent = new Intent(GameActivity.this, BackgroundSoundService.class);
-        startService(intent);
+
+    public void PlayBackgroundSound() {
+        BackgroundSoundIntent = new Intent(GameActivity.this, BackgroundSoundService.class);
+        startService(BackgroundSoundIntent);
     }
 
     private void findViews() {
+        game_LBL_score = findViewById(R.id.game_LBL_score);
         gameActivity_FAB_left = findViewById(R.id.gameActivity_FAB_left);
         gameActivity_FAB_right = findViewById(R.id.gameActivity_FAB_right);
         gameBoard = new ShapeableImageView[][]{{findViewById(R.id.game_IMG_0_0), findViewById(R.id.game_IMG_0_1), findViewById(R.id.game_IMG_0_2), findViewById(R.id.game_IMG_0_3), findViewById(R.id.game_IMG_0_4)},
@@ -134,9 +144,9 @@ public class GameActivity extends AppCompatActivity {
      */
     private void moveAllObjects() {
         cleanTheBoard();
-        gameManager.moveObjectsDown(BOARD_LIMIT, X_LENGTH);
+        gameManager.moveObjectsDown(PLANE_LINE, X_LENGTH);
         loadAllObjects();
-        loadImage(gameManager.getPlane().getObjectImage(), gameBoard[BOARD_LIMIT][gameManager.getPlane().getX()]);
+        loadImage(gameManager.getPlane().getObjectImage(), gameBoard[PLANE_LINE][gameManager.getPlane().getX()]);
     }
 
     private void loadAllObjects() {
@@ -144,7 +154,7 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 //Checking if there is exist object in this location and if it reached to the limit he can go out of the board
-                if (board[i][j] != null && board[i][j].getY() <= BOARD_LIMIT + 1) {
+                if (board[i][j] != null && board[i][j].getY() <= PLANE_LINE + 1) {
                     loadImage(board[i][j].getObjectImage(), gameBoard[board[i][j].getY()][board[i][j].getX()]);
                 }
             }
@@ -158,6 +168,16 @@ public class GameActivity extends AppCompatActivity {
         //Toast
         Toast.makeText(this, "Birds attacked you!", Toast.LENGTH_LONG)
                 .show();
+    }
+
+    //    private void saveToastAndSound() {
+    private void saveSound() {
+        //Make sound
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.relieved_sigh);
+        mediaPlayer.start();
+//        //Toast
+//        Toast.makeText(this, "You saved an passenger!", Toast.LENGTH_LONG)
+//                .show();
     }
 
     private void vibrateAll() {
@@ -180,8 +200,9 @@ public class GameActivity extends AppCompatActivity {
         seconds = seconds % 60;
 
         //Checking if there is objects to move,
-        //if it does - move them
-        if (gameManager.getNumOfObjects() > 0) {
+        //If it does - move them
+//        if (gameManager.getNumOfObjects() > 0) {
+        if (gameManager.isEmptyBoard() == false) {
             moveAllObjects();
         }
 
@@ -198,10 +219,23 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void run() {
                 runOnUiThread(() -> {
-                    if (!gameManager.checkIfCrash(BOARD_LIMIT)) {
+                    if (!gameManager.checkIfCrash(PLANE_LINE)) {
+                        if (gameManager.checkIfSave(PLANE_LINE)) {
+//                            saveToastAndSound();
+                            saveSound();
+                            game_LBL_score.setText("" + gameManager.getPlane().getScore());
+                        }
                         refreshUI();
                     } else {
-                        if (gameManager.getPlane().getNumOfCrash() != 0) {
+                        if (gameManager.getPlane().getNumOfCrash() == gameManager.getPlane().getLife()) {
+//                            onStop();
+//                            ShapeableImageView imageView = findViewById(R.id.game_FADEIN);
+//                            loadImage(R.drawable.heart, imageView);
+                            scoresIntent = new Intent(GameActivity.this, ScoresActivity.class);
+                            startActivity(scoresIntent);
+//                            stopService(intent);
+                            finish();
+                        } else if (gameManager.getPlane().getNumOfCrash() != 0) {
                             game_IMG_hearts[game_IMG_hearts.length - gameManager.getPlane().getNumOfCrash()].setVisibility(View.INVISIBLE);
                         }
                         crashToastAndSound();
@@ -211,7 +245,7 @@ public class GameActivity extends AppCompatActivity {
 
                         loadImage(gameManager.getPlane().getExplodeImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
 
-                        gameManager.getPlane().setY(BOARD_LIMIT);
+                        gameManager.getPlane().setY(PLANE_LINE);
                         gameManager.getPlane().setX(DEFAULT_X_FOR_PLANE);
                     }
                 });
@@ -219,15 +253,29 @@ public class GameActivity extends AppCompatActivity {
         }, DELAY, DELAY);
     }
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        startTimer();
+//    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        startService(BackgroundSoundIntent);
         startTimer();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        stopService(BackgroundSoundIntent);
         stopTimer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(BackgroundSoundIntent);
     }
 }

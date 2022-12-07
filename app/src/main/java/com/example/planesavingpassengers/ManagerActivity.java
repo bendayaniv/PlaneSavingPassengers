@@ -1,10 +1,6 @@
 package com.example.planesavingpassengers;
 
-import static com.example.planesavingpassengers.R.raw.crowd_panic;
-
 //import android.media.MediaPlayer;
-
-import android.media.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,16 +9,22 @@ public class ManagerActivity {
 
     private Plane plane;
     private Object[][] objectsBoard;
-    private int numOfObjects;
+    //    private int numOfObjects;
+    private boolean emptyBoard;
 
     public ManagerActivity(int life, int yLength, int xLength, int defaultXForPlane, int defaultYForPlane) {
         plane = new Plane(life, defaultXForPlane, defaultYForPlane);
         objectsBoard = new Object[yLength][xLength];
-        numOfObjects = 0;
+//        numOfObjects = 0;
+        emptyBoard = true;
     }
 
-    public int getNumOfObjects() {
-        return numOfObjects;
+//    public int getNumOfObjects() {
+//        return numOfObjects;
+//    }
+
+    public boolean isEmptyBoard() {
+        return emptyBoard;
     }
 
     public Object[][] getBoard() {
@@ -55,20 +57,48 @@ public class ManagerActivity {
      * @param boardLimit the limit to the objects on the board
      */
     public void moveObjectsDown(int boardLimit, int xScale) {
-        for (int i = objectsBoard.length - 1; i >= 0; i--) {
-            for (int j = 0; j < objectsBoard[i].length; j++) {
-                if (objectsBoard[i][j] != null && objectsBoard[i][j].getY() == boardLimit + 1) {
-                    objectsBoard[i][j] = null;
-                } else if (objectsBoard[i][j] != null) {
-                    int tmpY = objectsBoard[i][j].getY() + 1;
-                    objectsBoard[i][j].setY(tmpY);
-                    objectsBoard[i + 1][j] = objectsBoard[i][j];
-                    objectsBoard[i][j] = null;
+//        if (numOfObjects != 0) {
+        if (emptyBoard == false) {
+            for (int i = objectsBoard.length - 1; i >= 0; i--) {
+                for (int j = 0; j < objectsBoard[i].length; j++) {
+                    if (objectsBoard[i][j] != null && objectsBoard[i][j].getY() == boardLimit + 1) {
+                        objectsBoard[i][j] = null;
+                    } else if (objectsBoard[i][j] != null) {
+                        int tmpY = objectsBoard[i][j].getY() + 1;
+                        objectsBoard[i][j].setY(tmpY);
+                        objectsBoard[i + 1][j] = objectsBoard[i][j];
+                        objectsBoard[i][j] = null;
+                    }
                 }
             }
         }
-        checkTheAbilityToCreateNewBird(xScale);
+        createObjects(xScale);
+//        checkTheAbilityToCreateNewBird(xScale);
+//        createNewBird(-1, xScale);
     }
+
+    private void createObjects(int xScale) {
+        int random = new Random().nextInt(10);
+        int randomNumOfBirds = new Random().nextInt(3);
+        if (random > 0 && randomNumOfBirds != 0) {
+//            emptyBoard = false;
+            // Create only passengers
+            if (random < 4) {
+                createNewPassenger(xScale);
+            }
+            // Create birds
+            else {
+                for (int i = 0; i < randomNumOfBirds; i++) {
+                    checkTheAbilityToCreateNewBird(xScale);
+                }
+                // Create also passengers
+                if (random == 9) {
+                    createNewPassenger(xScale);
+                }
+            }
+        }
+    }
+
 
     public void clearAllObjects() {
         for (int i = objectsBoard.length - 1; i >= 0; i--) {
@@ -76,7 +106,8 @@ public class ManagerActivity {
                 objectsBoard[i][j] = null;
             }
         }
-        numOfObjects = 0;
+//        numOfObjects = 0;
+        emptyBoard = true;
     }
 
     /**
@@ -87,7 +118,8 @@ public class ManagerActivity {
      */
     public void checkTheAbilityToCreateNewBird(int xScale) {
         int theLimitedIndex = -1;
-        if (numOfObjects > 0) {
+//        if (numOfObjects > 0) {
+        if (emptyBoard == false) {
 
             //Array list of all the x-scales of the potential problematic birds for creating a new one
             ArrayList<Integer> checkList = new ArrayList<>();
@@ -145,17 +177,26 @@ public class ManagerActivity {
      * @param index == indicates if can be anywhere (-1) or can not be in specific place(!-1)
      */
     public void createNewBird(int index, int howManyOptions) {
-        //The extra 1 is for the option to not create
-        int randomX = new Random().nextInt(howManyOptions + 1);
-        if (randomX >= 0 && randomX <= 2) {
+////        //The extra 1 is for the option to not create
+//        int randomX = new Random().nextInt(howManyOptions + 1);
+        int randomX = new Random().nextInt(howManyOptions);
+        if (randomX >= 0 && randomX <= howManyOptions - 1) {
+//        if (randomX >= 0 && randomX <= 2) {
             if (index != -1) {
                 while (randomX == index) {
-                    randomX = new Random().nextInt(3);
+                    randomX = new Random().nextInt(howManyOptions + 1);
                 }
             }
             objectsBoard[1][randomX] = new Bird(randomX, 1);
-            numOfObjects++;
+//            numOfObjects++;
+            emptyBoard = false;
         }
+    }
+
+    private void createNewPassenger(int howManyOptions) {
+        int randomX = new Random().nextInt(howManyOptions);
+        objectsBoard[1][randomX] = new Passenger(randomX, 1);
+//        emptyBoard = false;
     }
 
     /**
@@ -165,9 +206,9 @@ public class ManagerActivity {
      *
      * @return true if does, false if does not
      */
-    public boolean checkIfCrash(int boardLimit) {
-        for (int i = 0; i < objectsBoard[boardLimit].length; i++) {
-            if (objectsBoard[boardLimit][i] != null && plane.getX() == i) {
+    public boolean checkIfCrash(int planeLine) {
+        for (int i = 0; i < objectsBoard[planeLine].length; i++) {
+            if (objectsBoard[planeLine][i] instanceof Bird && plane.getX() == i) {
                 raiseCrashNumber();
                 return true;
             }
@@ -182,4 +223,22 @@ public class ManagerActivity {
             getPlane().setNumOfCrash(crash);
         }
     }
+
+    public boolean checkIfSave(int planeLine) {
+        for (int i = 0; i < objectsBoard[planeLine].length; i++) {
+            if (objectsBoard[planeLine][i] instanceof Passenger && plane.getX() == i) {
+                // Clear the good hit from the screen and raise the player score
+                objectsBoard[planeLine][i] = null;
+                raiseScore();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void raiseScore() {
+        getPlane().setScore();
+    }
+
+
 }

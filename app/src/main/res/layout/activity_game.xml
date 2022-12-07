@@ -37,6 +37,7 @@
         android:background="@drawable/sky"
         android:orientation="horizontal">
 
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -512,6 +513,15 @@
         </LinearLayout>
 
     </LinearLayout>
+
+<!--    <com.google.android.material.imageview.ShapeableImageView-->
+<!--        android:id="@+id/game_FADEIN"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        underlay="@drawable/sky"-->
+<!--        android:layout_weight="1"-->
+<!--        android:scaleType="fitXY" />-->
 
     <LinearLayout
         android:layout_width="140dp"
