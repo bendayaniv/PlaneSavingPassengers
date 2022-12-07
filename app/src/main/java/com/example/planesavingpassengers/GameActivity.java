@@ -232,6 +232,7 @@ public class GameActivity extends AppCompatActivity {
 //                            ShapeableImageView imageView = findViewById(R.id.game_FADEIN);
 //                            loadImage(R.drawable.heart, imageView);
                             scoresIntent = new Intent(GameActivity.this, ScoresActivity.class);
+                            scoresIntent.putExtra(ScoresActivity.KEY_SCORE, gameManager.getPlane().getScore());
                             startActivity(scoresIntent);
 //                            stopService(intent);
                             finish();

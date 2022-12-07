@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 public class ScoresActivity extends AppCompatActivity {
 
+    public static final String KEY_SCORE = "KEY_SCORE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
