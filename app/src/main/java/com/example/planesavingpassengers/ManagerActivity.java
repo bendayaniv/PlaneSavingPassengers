@@ -77,13 +77,14 @@ public class ManagerActivity {
 //        createNewBird(-1, xScale);
     }
 
-    private void createObjects(int xScale) {
+    /*private*/
+    public void createObjects(int xScale) {
         int random = new Random().nextInt(10);
-        int randomNumOfBirds = new Random().nextInt(3);
+        int randomNumOfBirds = new Random().nextInt(4);
         if (random > 0 && randomNumOfBirds != 0) {
 //            emptyBoard = false;
             // Create only passengers
-            if (random < 4) {
+            if (random < 3) {
                 createNewPassenger(xScale);
             }
             // Create birds
@@ -117,6 +118,7 @@ public class ManagerActivity {
      * @param xScale the limit on the x scale
      */
     public void checkTheAbilityToCreateNewBird(int xScale) {
+        // Default value
         int theLimitedIndex = -1;
 //        if (numOfObjects > 0) {
         if (emptyBoard == false) {
@@ -124,10 +126,10 @@ public class ManagerActivity {
             //Array list of all the x-scales of the potential problematic birds for creating a new one
             ArrayList<Integer> checkList = new ArrayList<>();
 
-            //Our indication if there can be a problem to create a new bird in certain spot
+            //Our indication if there can be a problem to create a new bird in certain spots
             boolean checking = true;
 
-            //Getting all the x-scales of the birds that currently on the board
+            //Getting all the x-scales of the birds that currently on the board in the xScale - 1 first rows
             for (int i = xScale - 1; i > 0; i--) {
                 for (int j = 0; j < objectsBoard[i].length; j++) {
                     if (objectsBoard[i][j] instanceof Bird) {
@@ -180,21 +182,24 @@ public class ManagerActivity {
 ////        //The extra 1 is for the option to not create
 //        int randomX = new Random().nextInt(howManyOptions + 1);
         int randomX = new Random().nextInt(howManyOptions);
-        if (randomX >= 0 && randomX <= howManyOptions - 1) {
+//        if (randomX >= 0 && randomX <= howManyOptions - 1) {
 //        if (randomX >= 0 && randomX <= 2) {
-            if (index != -1) {
-                while (randomX == index) {
-                    randomX = new Random().nextInt(howManyOptions + 1);
-                }
+        if (index != -1 || objectsBoard[1][randomX] != null) {
+            while (randomX == index || objectsBoard[1][randomX] != null) {
+                randomX = new Random().nextInt(howManyOptions + 1);
             }
-            objectsBoard[1][randomX] = new Bird(randomX, 1);
-//            numOfObjects++;
-            emptyBoard = false;
         }
+        objectsBoard[1][randomX] = new Bird(randomX, 1);
+//            numOfObjects++;
+        emptyBoard = false;
+//        }
     }
 
     private void createNewPassenger(int howManyOptions) {
         int randomX = new Random().nextInt(howManyOptions);
+        while (objectsBoard[1][randomX] != null) {
+            randomX = new Random().nextInt(howManyOptions);
+        }
         objectsBoard[1][randomX] = new Passenger(randomX, 1);
 //        emptyBoard = false;
     }
@@ -229,16 +234,16 @@ public class ManagerActivity {
             if (objectsBoard[planeLine][i] instanceof Passenger && plane.getX() == i) {
                 // Clear the good hit from the screen and raise the player score
                 objectsBoard[planeLine][i] = null;
-                raiseScore();
+                getPlane().setScore();
                 return true;
             }
         }
         return false;
     }
 
-    private void raiseScore() {
-        getPlane().setScore();
-    }
+//    private void raiseScore() {
+//        getPlane().setScore();
+//    }
 
 
 }

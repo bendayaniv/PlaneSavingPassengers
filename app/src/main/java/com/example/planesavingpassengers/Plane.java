@@ -4,7 +4,7 @@ public class Plane extends Object {
     private int numOfCrash = 0;
     private int score = 0;
     private final int life;
-    private final int explodeImage = R.drawable.explosion;
+//    private final int explodeImage = R.drawable.explosion;
 
 
     public Plane(int lifeLength, int defaultX, int defaultY) {
@@ -12,9 +12,9 @@ public class Plane extends Object {
         life = lifeLength;
     }
 
-    public int getExplodeImage() {
-        return explodeImage;
-    }
+//    public int getExplodeImage() {
+//        return explodeImage;
+//    }
 
     public int getNumOfCrash() {
         return numOfCrash;
@@ -35,5 +35,9 @@ public class Plane extends Object {
 
     public void setScore(/*int addingScore*/) {
         this.score += 10;
+    }
+
+    public void resetScoreForNewGame() {
+        this.score = 0;
     }
 }

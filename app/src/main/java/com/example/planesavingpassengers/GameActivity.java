@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +22,16 @@ import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity {
 
-    private final int DELAY = /*1000*/500;
+//    enum Direction {
+//        LEFT, RIGHT, STAY
+//    }
+
+
+    public static final String KEY_DELAY = "KEY_DELAY";
+    public static final String KEY_BUTTONS = "KEY_BUTTONS";
+    private int DELAY = 1000;
+    private boolean buttonsEnabled = true;
+
     private final int Y_LENGTH = 12;
     private final int X_LENGTH = 5;
     private final int PLANE_LINE = 10;
@@ -32,6 +40,7 @@ public class GameActivity extends AppCompatActivity {
     private final int STEP_LEFT_OF_PLANE = -1;
     private final String LEFT_DIRECTION = "LEFT";
     private final String RIGHT_DIRECTION = "RIGHT";
+    private final String STAY_IN_PUT = "";
 
     private ExtendedFloatingActionButton gameActivity_FAB_left;
     private ExtendedFloatingActionButton gameActivity_FAB_right;
@@ -40,13 +49,12 @@ public class GameActivity extends AppCompatActivity {
     private MaterialTextView game_LBL_score;
 
     private ManagerActivity gameManager;
-    private Timer timer;
+    private Timer checkingHitTimer;
+    private Timer movingObjectsTimer;
     long startTime = 0;
 
     private Intent scoresIntent;
     private Intent BackgroundSoundIntent;
-
-//    public final MediaPlayer crowd_panic = MediaPlayer.create(this, R.raw.crowd_panic);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,14 @@ public class GameActivity extends AppCompatActivity {
         findViews();
         createMovingPlaneButtons();
         gameManager = new ManagerActivity(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, PLANE_LINE);
+
+        // Get the details of the game from the previous activity
+        Intent prevIntent = getIntent();
+        DELAY = prevIntent.getIntExtra(KEY_DELAY, 1000);
+        buttonsEnabled = prevIntent.getBooleanExtra(KEY_BUTTONS, true);
+
+        startTime = System.currentTimeMillis();
+
     }
 
 
@@ -114,14 +130,13 @@ public class GameActivity extends AppCompatActivity {
      * @param direction = the direction of the plane
      */
     private void movePlane(String direction) {
-//        // make sound
-//        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.relieved_sigh);
-//        mediaPlayer.start();
-        deleteImage(gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
-        if (direction.equals(RIGHT_DIRECTION))
-            gameManager.movePlane(STEP_RIGHT_OF_PLANE);
-        else if (direction.equals(LEFT_DIRECTION))
-            gameManager.movePlane(STEP_LEFT_OF_PLANE);
+        if (!direction.equals(STAY_IN_PUT)) {
+            deleteImage(gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
+            if (direction.equals(RIGHT_DIRECTION))
+                gameManager.movePlane(STEP_RIGHT_OF_PLANE);
+            else if (direction.equals(LEFT_DIRECTION))
+                gameManager.movePlane(STEP_LEFT_OF_PLANE);
+        }
         loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
     }
 
@@ -146,7 +161,7 @@ public class GameActivity extends AppCompatActivity {
         cleanTheBoard();
         gameManager.moveObjectsDown(PLANE_LINE, X_LENGTH);
         loadAllObjects();
-        loadImage(gameManager.getPlane().getObjectImage(), gameBoard[PLANE_LINE][gameManager.getPlane().getX()]);
+        movePlane(STAY_IN_PUT);
     }
 
     private void loadAllObjects() {
@@ -161,23 +176,27 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void explosionToastAndSound() {
+        //Make sound
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.explosion);
+        mediaPlayer.start();
+        //Toast
+        Toast.makeText(this, "You exploded!", Toast.LENGTH_SHORT).show();
+    }
+
     private void crashToastAndSound() {
         //Make sound
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.crowd_panic);
         mediaPlayer.start();
         //Toast
-        Toast.makeText(this, "Birds attacked you!", Toast.LENGTH_LONG)
+        Toast.makeText(this, "Birds attacked you!", Toast.LENGTH_SHORT)
                 .show();
     }
 
-    //    private void saveToastAndSound() {
     private void saveSound() {
         //Make sound
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.relieved_sigh);
         mediaPlayer.start();
-//        //Toast
-//        Toast.makeText(this, "You saved an passenger!", Toast.LENGTH_LONG)
-//                .show();
     }
 
     private void vibrateAll() {
@@ -190,8 +209,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void stopTimer() {
-        timer.cancel();
+    private void stopTimers() {
+        checkingHitTimer.cancel();
+        movingObjectsTimer.cancel();
     }
 
     private void refreshUI() {
@@ -201,77 +221,106 @@ public class GameActivity extends AppCompatActivity {
 
         //Checking if there is objects to move,
         //If it does - move them
-//        if (gameManager.getNumOfObjects() > 0) {
         if (gameManager.isEmptyBoard() == false) {
             moveAllObjects();
         }
 
-        //Create new bird every 2 seconds
-        if (seconds % 2 == 0) {
+        //Create new bird every 1 seconds
+        if (seconds % 1 == 0) {
             gameManager.createNewBird(-1, X_LENGTH);
+//            gameManager.checkTheAbilityToCreateNewBird(X_LENGTH);
         }
     }
 
-    private void startTimer() {
-        startTime = System.currentTimeMillis();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+//    public boolean checkIfCrash() {
+//        boolean ans = gameManager.checkIfCrash(PLANE_LINE);
+//        if (ans == false) {
+//            if (gameManager.checkIfSave(PLANE_LINE)) {
+//                vibrateAll();
+//                saveSound();
+//                game_LBL_score.setText("" + gameManager.getPlane().getScore());
+//            }
+//        }
+//        return ans;
+//    }
+
+    public void checkIfSave() {
+        if (gameManager.checkIfSave(PLANE_LINE)) {
+            vibrateAll();
+            saveSound();
+            game_LBL_score.setText("" + gameManager.getPlane().getScore());
+        }
+    }
+
+    private void planeExploded() {
+        stopTimers();
+        explosionToastAndSound();
+//        loadImage(gameManager.getPlane().getExplodeImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
+
+        // Delivering the score to the scores screen
+        scoresIntent = new Intent(GameActivity.this, ScoresActivity.class);
+        scoresIntent.putExtra(ScoresActivity.KEY_SCORE, gameManager.getPlane().getScore());
+        startActivity(scoresIntent);
+
+        finish();
+    }
+
+    private void birdsHitPlane() {
+        game_IMG_hearts[game_IMG_hearts.length - gameManager.getPlane().getNumOfCrash()].setVisibility(View.INVISIBLE);
+
+        crashToastAndSound();
+
+        gameManager.clearAllObjects();
+
+        gameManager.getPlane().setY(PLANE_LINE);
+        gameManager.getPlane().setX(DEFAULT_X_FOR_PLANE);
+    }
+
+    private void startMovingObjectsTimer() {
+        movingObjectsTimer = new Timer();
+        movingObjectsTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(() -> {
-                    if (!gameManager.checkIfCrash(PLANE_LINE)) {
-                        if (gameManager.checkIfSave(PLANE_LINE)) {
-//                            saveToastAndSound();
-                            saveSound();
-                            game_LBL_score.setText("" + gameManager.getPlane().getScore());
-                        }
-                        refreshUI();
-                    } else {
-                        if (gameManager.getPlane().getNumOfCrash() == gameManager.getPlane().getLife()) {
-//                            onStop();
-//                            ShapeableImageView imageView = findViewById(R.id.game_FADEIN);
-//                            loadImage(R.drawable.heart, imageView);
-                            scoresIntent = new Intent(GameActivity.this, ScoresActivity.class);
-                            scoresIntent.putExtra(ScoresActivity.KEY_SCORE, gameManager.getPlane().getScore());
-                            startActivity(scoresIntent);
-//                            stopService(intent);
-                            finish();
-                        } else if (gameManager.getPlane().getNumOfCrash() != 0) {
-                            game_IMG_hearts[game_IMG_hearts.length - gameManager.getPlane().getNumOfCrash()].setVisibility(View.INVISIBLE);
-                        }
-                        crashToastAndSound();
-                        vibrateAll();
-
-                        gameManager.clearAllObjects();
-
-                        loadImage(gameManager.getPlane().getExplodeImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
-
-                        gameManager.getPlane().setY(PLANE_LINE);
-                        gameManager.getPlane().setX(DEFAULT_X_FOR_PLANE);
-                    }
+                    refreshUI();
                 });
             }
         }, DELAY, DELAY);
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        startTimer();
-//    }
+    private void startCheckHitTimer() {
+        checkingHitTimer = new Timer();
+        checkingHitTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> {
+                    checkIfSave();
+                    if (gameManager.checkIfCrash(PLANE_LINE) == true) {
+                        vibrateAll();
+                        if (gameManager.getPlane().getNumOfCrash() == gameManager.getPlane().getLife()) {
+                            planeExploded();
+                        } else if (gameManager.getPlane().getNumOfCrash() != 0) {
+                            birdsHitPlane();
+                        }
+                    }
+                });
+            }
+        }, 100, 100);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         startService(BackgroundSoundIntent);
-        startTimer();
+        startCheckHitTimer();
+        startMovingObjectsTimer();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         stopService(BackgroundSoundIntent);
-        stopTimer();
+        stopTimers();
     }
 
     @Override
@@ -279,4 +328,36 @@ public class GameActivity extends AppCompatActivity {
         super.onPause();
         stopService(BackgroundSoundIntent);
     }
+
+//    public void getOdometer() {
+//        // Get the content resolver
+//        ContentResolver cr = getContentResolver();
+//        // Define the columns we want
+//        String[] mProjection =
+//                {
+//                        OdometerContract.OdometerEntry.COLUMN_ODOMETER
+//                };
+//        // Filter results WHERE "title" = 'My Title'
+//        String mSelectionClause = OdometerContract.OdometerEntry.COLUMN_ODOMETER + " = ?";
+//        String[] mSelectionArgs = {"1"};
+//        // How you want the results sorted in the resulting Cursor
+//        String mSortOrder = OdometerContract.OdometerEntry.COLUMN_ODOMETER + " DESC";
+//        Cursor mCursor = cr.query(
+//                OdometerContract.OdometerEntry.CONTENT_URI,   // The content URI of the words table
+//                mProjection,             // The columns to return for each row
+//                mSelectionClause,              // Either null, or the word the user entered
+//                mSelectionArgs,          // Either empty, or the string the user entered
+//                mSortOrder               // The sort order for the returned rows
+//        );
+//        if (mCursor != null) {
+//            mCursor.moveToFirst();
+//            int odometer = mCursor.getInt(mCursor.getColumnIndex(OdometerContract.OdometerEntry.COLUMN_ODOMETER));
+//            mCursor.close();
+//            if (odometer == 0) {
+//                ContentValues values = new ContentValues();
+//                values.put(OdometerContract.OdometerEntry.COLUMN_ODOMETER, 1);
+//                Uri newUri = getContentResolver().insert(OdometerContract.OdometerEntry.CONTENT_URI, values);
+//            }
+//        }
+//    }
 }
