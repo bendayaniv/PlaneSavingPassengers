@@ -36,7 +36,6 @@ public class ListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-
         findViews(view);
 
         scoresList = new ArrayList<>();
@@ -74,6 +73,11 @@ public class ListFragment extends Fragment {
         if (callback != null) {
             callback.sendLocation(0, 0);
         }
+    }
+
+    public void getDetails(String name, int score, double latitude, double longitude) {
+        scoresList.add(name + " " + score + " " + latitude + " " + longitude);
+        arrayAdapter.notifyDataSetChanged();
     }
 
 

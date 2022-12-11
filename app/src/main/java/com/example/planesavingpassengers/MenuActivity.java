@@ -1,11 +1,17 @@
 package com.example.planesavingpassengers;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -32,6 +38,19 @@ public class MenuActivity extends AppCompatActivity {
         //Set direction on all devices from LEFT to RIGHT
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
+//        // Create access to device location
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//        }
+
+//        while (ActivityCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+//        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//            Toast.makeText(this, "We need your location...", Toast.LENGTH_LONG).show();
+//        }
+
+
         findViews();
 
         menu_LBL_headline.setText("Save the Passengers!");
@@ -43,6 +62,19 @@ public class MenuActivity extends AppCompatActivity {
 //        });
         menuButtons();
     }
+
+//    private boolean isGPSEnabled() {
+//        LocationManager locationManager = null;
+//        boolean gpsEnabled = false;
+//        if (locationManager == null)
+//            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+////        try {
+//        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+////        } catch (Exception ex) {
+//
+////        }
+//        return gpsEnabled;
+//    }
 
 
     private void findViews() {
@@ -61,6 +93,8 @@ public class MenuActivity extends AppCompatActivity {
     private void openScoresActivity() {
         Intent scoresIntent = new Intent(this, ScoresActivity.class);
         startActivity(scoresIntent);
+//        Intent scoresIntent = new Intent(this, GPSTryActivity.class);
+//        startActivity(scoresIntent);
 //        Intent scoreListIntent = new Intent(this, ListFragment.class);
 //        startActivity(scoreListIntent);
         finish();
