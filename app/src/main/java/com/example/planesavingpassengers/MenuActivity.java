@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Switch;
 
 import com.google.android.material.button.MaterialButton;
@@ -27,6 +28,9 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        //Set direction on all devices from LEFT to RIGHT
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
         findViews();
 
@@ -57,6 +61,8 @@ public class MenuActivity extends AppCompatActivity {
     private void openScoresActivity() {
         Intent scoresIntent = new Intent(this, ScoresActivity.class);
         startActivity(scoresIntent);
+//        Intent scoreListIntent = new Intent(this, ListFragment.class);
+//        startActivity(scoreListIntent);
         finish();
     }
 

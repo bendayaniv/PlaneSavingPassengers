@@ -1,0 +1,87 @@
+package com.example.planesavingpassengers;
+
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
+import com.example.planesavingpassengers.interfaces.MovementCallback;
+
+public class MovementDetector {
+    private MovementCallback movementCallback;
+    private SensorManager sensorManager;
+    private Sensor sensor/*accelerometerSensor*/;
+
+//    private int stepCountX = 0;
+//    private int stepCountY = 0;
+    private long timeStemp = 0;
+
+    private SensorEventListener sensorEventListener;
+
+    public MovementDetector(Context context, MovementCallback _movementCallback/*, SensorManager sensorManager*/) {
+        // Get the sensor manager
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE)/*sensorManager*/;
+        // Get the accelerometer sensor
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        // Get the step counter sensor
+        this.movementCallback = _movementCallback;
+
+        initEventListener();
+    }
+
+    private void initEventListener() {
+        sensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                // Get the sensor type
+                float x = event.values[0];
+//                float y = event.values[1];
+
+                sensePlaneMovement(x/*, y*/);
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+    }
+
+    private void sensePlaneMovement(float x/*, float y*/) {
+        if (System.currentTimeMillis() - timeStemp > 100) {
+            timeStemp = System.currentTimeMillis();
+            if (x > 4.0) {
+//                stepCountX++;
+                // Notify the listener
+                if (movementCallback != null) {
+                    movementCallback.stepLeft();
+                }
+            }
+            if (x < -4.0) {
+//                stepCountY++;
+                // Notify the listener
+                if (movementCallback != null) {
+                    movementCallback.stepRight();
+                }
+            }
+        }
+    }
+
+    public void start() {
+        sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    public void stop() {
+        sensorManager.unregisterListener(sensorEventListener);
+    }
+
+//    public int getStepCountX() {
+//        return stepCountX;
+//    }
+//
+//    public int getStepCountY() {
+//        return stepCountY;
+//    }
+}
+

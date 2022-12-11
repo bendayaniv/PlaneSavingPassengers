@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.planesavingpassengers.interfaces.MovementCallback;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
@@ -56,6 +57,8 @@ public class GameActivity extends AppCompatActivity {
     private Intent scoresIntent;
     private Intent BackgroundSoundIntent;
 
+    private MovementDetector movementDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,13 +70,37 @@ public class GameActivity extends AppCompatActivity {
         PlayBackgroundSound();
 
         findViews();
-        createMovingPlaneButtons();
+
+
         gameManager = new ManagerActivity(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, PLANE_LINE);
 
         // Get the details of the game from the previous activity
         Intent prevIntent = getIntent();
         DELAY = prevIntent.getIntExtra(KEY_DELAY, 1000);
         buttonsEnabled = prevIntent.getBooleanExtra(KEY_BUTTONS, true);
+
+//        ListView l = findViewById(R.id.list);;
+//        String tutorials[]
+//                = { "Algorithms", "Data Structures",
+//                "Languages", "Interview Corner",
+//                "GATE", "ISRO CS",
+//                "UGC NET CS", "CS Subjects",
+//                "Web Technologies" };
+//        ArrayAdapter<String> arr;
+//        arr
+//                = new ArrayAdapter<String>(
+//                this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, tutorials);
+//        l.setAdapter(arr);
+
+        if (buttonsEnabled == true) {
+            createMovingPlaneButtons();
+        } else {
+            initStepDetector();
+            gameActivity_FAB_left.setVisibility(View.INVISIBLE);
+            gameActivity_FAB_right.setVisibility(View.INVISIBLE);
+        }
+//        createMovingPlaneButtons();
+
 
         startTime = System.currentTimeMillis();
 
@@ -112,6 +139,20 @@ public class GameActivity extends AppCompatActivity {
     private void createMovingPlaneButtons() {
         gameActivity_FAB_right.setOnClickListener(v -> movePlane(RIGHT_DIRECTION));
         gameActivity_FAB_left.setOnClickListener(v -> movePlane(LEFT_DIRECTION));
+    }
+
+    private void initStepDetector() {
+        movementDetector = new MovementDetector(this, new MovementCallback() {
+            @Override
+            public void stepRight() {
+                movePlane(RIGHT_DIRECTION);
+            }
+
+            @Override
+            public void stepLeft() {
+                movePlane(LEFT_DIRECTION);
+            }
+        });
     }
 
     private void loadImage(int imageNum, ShapeableImageView imageView) {
@@ -314,6 +355,9 @@ public class GameActivity extends AppCompatActivity {
         startService(BackgroundSoundIntent);
         startCheckHitTimer();
         startMovingObjectsTimer();
+        if (buttonsEnabled == false) {
+            movementDetector.start();
+        }
     }
 
     @Override
@@ -321,43 +365,18 @@ public class GameActivity extends AppCompatActivity {
         super.onStop();
         stopService(BackgroundSoundIntent);
         stopTimers();
+        if (buttonsEnabled == false) {
+            movementDetector.stop();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         stopService(BackgroundSoundIntent);
+        stopTimers();
+        if (buttonsEnabled == false) {
+            movementDetector.stop();
+        }
     }
-
-//    public void getOdometer() {
-//        // Get the content resolver
-//        ContentResolver cr = getContentResolver();
-//        // Define the columns we want
-//        String[] mProjection =
-//                {
-//                        OdometerContract.OdometerEntry.COLUMN_ODOMETER
-//                };
-//        // Filter results WHERE "title" = 'My Title'
-//        String mSelectionClause = OdometerContract.OdometerEntry.COLUMN_ODOMETER + " = ?";
-//        String[] mSelectionArgs = {"1"};
-//        // How you want the results sorted in the resulting Cursor
-//        String mSortOrder = OdometerContract.OdometerEntry.COLUMN_ODOMETER + " DESC";
-//        Cursor mCursor = cr.query(
-//                OdometerContract.OdometerEntry.CONTENT_URI,   // The content URI of the words table
-//                mProjection,             // The columns to return for each row
-//                mSelectionClause,              // Either null, or the word the user entered
-//                mSelectionArgs,          // Either empty, or the string the user entered
-//                mSortOrder               // The sort order for the returned rows
-//        );
-//        if (mCursor != null) {
-//            mCursor.moveToFirst();
-//            int odometer = mCursor.getInt(mCursor.getColumnIndex(OdometerContract.OdometerEntry.COLUMN_ODOMETER));
-//            mCursor.close();
-//            if (odometer == 0) {
-//                ContentValues values = new ContentValues();
-//                values.put(OdometerContract.OdometerEntry.COLUMN_ODOMETER, 1);
-//                Uri newUri = getContentResolver().insert(OdometerContract.OdometerEntry.CONTENT_URI, values);
-//            }
-//        }
-//    }
 }
