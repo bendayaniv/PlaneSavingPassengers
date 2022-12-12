@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import com.example.planesavingpassengers.interfaces.MovementCallback;
+import com.example.planesavingpassengers.Interfaces.MovementCallback;
 
 public class MovementDetector {
     private MovementCallback movementCallback;

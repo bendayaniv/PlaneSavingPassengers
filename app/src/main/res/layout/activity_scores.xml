@@ -7,7 +7,7 @@
     android:background="@drawable/sky"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".View.Activity.ScoresActivity">
+    tools:context=".Views.Activities.ScoresActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/scores_LBL_headline"
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_height="75dp"
             android:scaleType="fitXY"
             android:text="Scores List"
             android:textAlignment="center"
@@ -24,57 +24,99 @@
             android:textSize="40sp"
             android:textStyle="bold" />
 
-        <FrameLayout
-            android:id="@+id/scores_FRAM_mixed"
-            android:layout_width="wrap_content"
+        <!--        <FrameLayout-->
+        <!--            android:id="@+id/scores_FRAM_mixed"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_below="@id/scores_LBL_headline">-->
+
+
+        <LinearLayout
+            android:id="@+id/scores_LIN_mixed"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/scores_LBL_headline">
+            android:layout_below="@id/scores_LBL_headline"
+            android:orientation="horizontal">
 
-            <FrameLayout
-                android:id="@+id/scores_FRAM_list"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/scores_EDT_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/border"
-                android:padding="20dp" />
+                android:hint="Enter your name"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/scores_BTN_saveScore"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:clickable="true"
+                android:contentDescription="icon"
+                android:text="user 1"
+                android:textAlignment="center" />
+            <!--            <androidx.appcompat.widget.AppCompatEditText&ndash;&gt;-->
+            <!--            android:id="@+id/scores_EDT_name"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_centerInParent="true"-->
+            <!--            android:hint="Enter your name" />-->
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/scores_EDT_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:hint="Enter your name" />
+            <!--            <com.google.android.material.button.MaterialButton-->
+            <!--                android:id="@+id/scores_BTN_saveScore"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_below="@id/scores_EDT_name"-->
+            <!--                android:layout_centerHorizontal="true"-->
+            <!--                android:text="user 1" />-->
+        </LinearLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/scores_BTN_saveScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/scores_EDT_name"
-                    android:layout_centerHorizontal="true"
-                    android:text="user 1" />
-            </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/scores_FRAM_list"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/scores_LIN_mixed"
+            android:layout_weight="1"
+            android:background="@drawable/border"
+            android:padding="10dp" />
 
-        </FrameLayout>
+        <!--                    <RelativeLayout-->
+        <!--                        android:layout_width="match_parent"-->
+        <!--                        android:layout_height="match_parent">-->
+        <!--                        <androidx.appcompat.widget.AppCompatEditText-->
+        <!--                            android:id="@+id/scores_EDT_name"-->
+        <!--                            android:layout_width="match_parent"-->
+        <!--                            android:layout_height="wrap_content"-->
+        <!--                            android:layout_centerInParent="true"-->
+        <!--                            android:hint="Enter your name" />-->
+
+        <!--                        <com.google.android.material.button.MaterialButton-->
+        <!--                            android:id="@+id/scores_BTN_saveScore"-->
+        <!--                            android:layout_width="wrap_content"-->
+        <!--                            android:layout_height="wrap_content"-->
+        <!--                            android:layout_below="@id/scores_EDT_name"-->
+        <!--                            android:layout_centerHorizontal="true"-->
+        <!--                            android:text="user 1" />-->
+        <!--                        -->
+        <!--                    </RelativeLayout>-->
+
+        <!--        </FrameLayout>-->
 
         <View
             android:id="@+id/scores_VIEW_break"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_below="@id/scores_FRAM_mixed"
-            android:layout_weight="0.05" />
+            android:layout_height="20dp"
+            android:layout_below="@id/scores_FRAM_list"
+            android:layout_weight="0.1" />
 
         <FrameLayout
             android:id="@+id/scores_FRAM_map"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:layout_below="@id/scores_VIEW_break"
             android:layout_weight="1"
-            android:padding="20dp" />
+            android:padding="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/scores_BTN_backToMenu"
@@ -83,6 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/scores_FRAM_map"
             android:layout_centerHorizontal="true"
+            android:layout_weight="1"
             android:text="Menu"
             android:textColor="@color/black"
             android:textSize="30sp"

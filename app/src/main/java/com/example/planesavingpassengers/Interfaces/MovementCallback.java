@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.interfaces;
+package com.example.planesavingpassengers.Interfaces;
 
 public interface MovementCallback {
     void stepRight();

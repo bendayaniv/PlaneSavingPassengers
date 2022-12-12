@@ -1,7 +1,8 @@
-package com.example.planesavingpassengers.View.Activity;
+package com.example.planesavingpassengers.Views.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
 public class MenuActivity extends AppCompatActivity {
+
+    public static final String INDICATION = "INDICATION";
+//    public static final String IS_ON = "IS_ON";
 
     private MaterialTextView menu_LBL_headline;
     private MaterialButton menu_LBL_startGame;
@@ -44,8 +48,7 @@ public class MenuActivity extends AppCompatActivity {
 //        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 //            Toast.makeText(this, "We need your location...", Toast.LENGTH_LONG).show();
 //        }
-
-
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         findViews();
 
         menu_LBL_headline.setText("Save the Passengers!");
@@ -87,6 +90,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void openScoresActivity() {
         Intent scoresIntent = new Intent(this, ScoresActivity.class);
+        scoresIntent.putExtra(ScoresActivity.INDICATION, false);
         startActivity(scoresIntent);
 //        Intent scoresIntent = new Intent(this, GPSTryActivity.class);
 //        startActivity(scoresIntent);

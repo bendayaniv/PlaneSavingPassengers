@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.View.Activity;
+package com.example.planesavingpassengers.Views.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,9 +20,9 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.planesavingpassengers.R;
-import com.example.planesavingpassengers.interfaces.Callback_userProtocol;
-import com.example.planesavingpassengers.View.Fragments.ListFragment;
-import com.example.planesavingpassengers.View.Fragments.MapFragment;
+import com.example.planesavingpassengers.Interfaces.Callback_userProtocol;
+import com.example.planesavingpassengers.Views.Fragments.ListFragment;
+import com.example.planesavingpassengers.Views.Fragments.MapFragment;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
@@ -40,8 +40,10 @@ import com.google.android.material.textview.MaterialTextView;
 public class ScoresActivity extends AppCompatActivity {
 
     public static final String KEY_SCORE = "KEY_SCORE";
+    public static final String INDICATION = "INDICATION";
 
     private int score = 0;
+    public boolean indication = true;
 
     private MaterialTextView scores_LBL_headline;
     private FrameLayout scores_FRAM_list;
@@ -57,13 +59,14 @@ public class ScoresActivity extends AppCompatActivity {
 
     private LocationRequest locationRequest;
     private static final int REQUEST_CHECK_SETTINGS = 10001;
-    double latitude = 0;
-    double longitude = 0;
+    double currentLatitude = 0;
+    double currentLongitude = 0;
 
     Callback_userProtocol callback_userProtocol = new Callback_userProtocol() {
         @Override
         public void sendLocation(double latitude, double longitude) {
-            showUserLocation(latitude, longitude);
+//            showUserLocation(latitude, longitude);
+            mapFragment.zoom(latitude, longitude);
         }
     };
 
@@ -85,15 +88,23 @@ public class ScoresActivity extends AppCompatActivity {
 
         createFragments();
 
-        hideMapAndList();
-
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(2000);
+//        locationRequest = LocationRequest.create();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        locationRequest.setInterval(5000);
+//        locationRequest.setFastestInterval(2000);
 
         Intent prevIntent = getIntent();
         score = prevIntent.getIntExtra(KEY_SCORE, 0);
+        indication = prevIntent.getBooleanExtra(INDICATION, true);
+
+//        if (indication == true) {
+//            hideMapAndList();
+//        } else
+        if (indication == false) {
+            mapAndScoreVisible();
+        }
+
+        getCurrentLocation();
     }
 
     private void createFragments() {
@@ -107,7 +118,15 @@ public class ScoresActivity extends AppCompatActivity {
     }
 
     private void buttons() {
-        scores_BTN_saveScore.setOnClickListener(v -> mapAndScoreVisible());
+        scores_BTN_saveScore.setOnClickListener(v -> {
+            if (/*currentLatitude == 0 && currentLongitude == 0*/isGPSEnabled() == false) {
+                Toast.makeText(this, "Need to turn on your GPS", Toast.LENGTH_SHORT).show();
+//                return;
+            } else {
+                listFragment.getDetails(/*scores_EDT_name.getText().toString(), score, */currentLatitude, currentLongitude);
+                mapAndScoreVisible();
+            }
+        });
         scores_BTN_backToMenu.setOnClickListener(v -> backToMenu());
     }
 
@@ -123,20 +142,29 @@ public class ScoresActivity extends AppCompatActivity {
     }
 
     private void hideMapAndList() {
-        scores_LBL_headline.setVisibility(View.INVISIBLE);
-        scores_FRAM_list.setVisibility(View.INVISIBLE);
-        scores_VIEW_break.setVisibility(View.INVISIBLE);
-        scores_FRAM_map.setVisibility(View.INVISIBLE);
-        scores_BTN_backToMenu.setVisibility(View.INVISIBLE);
+        if (indication == true) {
+            scores_LBL_headline.setVisibility(View.INVISIBLE);
+            scores_FRAM_list.setVisibility(View.INVISIBLE);
+            scores_VIEW_break.setVisibility(View.INVISIBLE);
+            scores_FRAM_map.setVisibility(View.INVISIBLE);
+            scores_BTN_backToMenu.setVisibility(View.INVISIBLE);
+        } else if (indication == false) {
+            mapAndScoreVisible();
+        }
     }
 
     private void mapAndScoreVisible() {
         getCurrentLocation();
 
-        listFragment.getDetails(scores_EDT_name.getText().toString(), score, latitude, longitude);
+//        Toast.makeText(this, "Latitude: " + currentLatitude, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Longitude: " + currentLongitude, Toast.LENGTH_SHORT).show();
 
-        scores_EDT_name.setVisibility(View.GONE);
-        scores_BTN_saveScore.setVisibility(View.GONE);
+//        listFragment.getDetails(/*scores_EDT_name.getText().toString(), score, */currentLatitude, currentLongitude);
+//        listFragment.getDetails(scores_EDT_name.getText().toString(), score, 32.5, 22.1);
+
+
+        scores_EDT_name.setVisibility(View.INVISIBLE);
+        scores_BTN_saveScore.setVisibility(View.INVISIBLE);
 
         scores_LBL_headline.setVisibility(View.VISIBLE);
         scores_FRAM_list.setVisibility(View.VISIBLE);
@@ -152,16 +180,57 @@ public class ScoresActivity extends AppCompatActivity {
     }
 
 
-    public void getCurrentLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if (requestCode == 1) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                if (isGPSEnabled()) {
+//
+//                    getCurrentLocation();
+//
+//                } else {
+//
+//                    turnOnGPS(ScoresActivity.this);
+//                }
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == 2) {
+//            if (resultCode == Activity.RESULT_OK) {
+//
+//                getCurrentLocation();
+//            }
+//        }
+//    }
 
+
+    public void getCurrentLocation() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(2000);
+//        LocationResult locationResult;
+//        locationResult.getLocations().lastIndexOf()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            Toast.makeText(ScoresActivity.this, "0", Toast.LENGTH_SHORT).show();
             if (ActivityCompat.checkSelfPermission(ScoresActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(ScoresActivity.this, "1", Toast.LENGTH_SHORT).show();
                 if (isGPSEnabled()) {
+//                    Toast.makeText(ScoresActivity.this, "2", Toast.LENGTH_SHORT).show();
                     LocationServices.getFusedLocationProviderClient(ScoresActivity.this)
                             .requestLocationUpdates(locationRequest, new LocationCallback() {
                                 @Override
                                 public void onLocationResult(@NonNull LocationResult locationResult) {
                                     super.onLocationResult(locationResult);
+//                                    Toast.makeText(ScoresActivity.this, "3", Toast.LENGTH_SHORT).show();
 
                                     LocationServices.getFusedLocationProviderClient(ScoresActivity.this)
                                             .removeLocationUpdates(this);
@@ -169,11 +238,14 @@ public class ScoresActivity extends AppCompatActivity {
                                     if (locationResult != null && locationResult.getLocations().size() > 0) {
 
                                         int index = locationResult.getLocations().size() - 1;
-                                        latitude = locationResult.getLocations().get(index).getLatitude();
-                                        longitude = locationResult.getLocations().get(index).getLongitude();
+                                        currentLatitude = locationResult.getLocations().get(index).getLatitude();
+                                        currentLongitude = locationResult.getLocations().get(index).getLongitude();
+//                                        listFragment.getDetails(scores_EDT_name.getText().toString(),
+//                                                score, 0, 0);
                                     }
                                 }
                             }, Looper.getMainLooper());
+//                    Toast.makeText(ScoresActivity.this, "4", Toast.LENGTH_SHORT).show();
                 } else {
                     turnOnGPS(ScoresActivity.this);
                 }

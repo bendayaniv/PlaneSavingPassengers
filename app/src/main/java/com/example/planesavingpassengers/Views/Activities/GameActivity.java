@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.View.Activity;
+package com.example.planesavingpassengers.Views.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.planesavingpassengers.BackgroundSoundService;
-import com.example.planesavingpassengers.Model.GameManager;
-import com.example.planesavingpassengers.Model.Objects.Object;
+import com.example.planesavingpassengers.Models.GameManager;
+import com.example.planesavingpassengers.Models.Objects.Object;
 import com.example.planesavingpassengers.MovementDetector;
 import com.example.planesavingpassengers.R;
-import com.example.planesavingpassengers.interfaces.MovementCallback;
+import com.example.planesavingpassengers.Interfaces.MovementCallback;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;

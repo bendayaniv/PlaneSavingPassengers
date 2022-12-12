@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.Model.Objects;
+package com.example.planesavingpassengers.Models.Objects;
 
 import com.example.planesavingpassengers.R;
 

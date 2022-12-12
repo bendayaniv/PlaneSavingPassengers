@@ -1,6 +1,5 @@
-package com.example.planesavingpassengers.Model.Objects;
+package com.example.planesavingpassengers.Models.Objects;
 
-import com.example.planesavingpassengers.Model.Objects.Object;
 import com.example.planesavingpassengers.R;
 
 public class Passenger extends Object {

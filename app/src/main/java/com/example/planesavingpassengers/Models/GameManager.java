@@ -1,11 +1,11 @@
-package com.example.planesavingpassengers.Model;
+package com.example.planesavingpassengers.Models;
 
 //import android.media.MediaPlayer;
 
-import com.example.planesavingpassengers.Model.Objects.Bird;
-import com.example.planesavingpassengers.Model.Objects.Object;
-import com.example.planesavingpassengers.Model.Objects.Passenger;
-import com.example.planesavingpassengers.Model.Objects.Plane;
+import com.example.planesavingpassengers.Models.Objects.Bird;
+import com.example.planesavingpassengers.Models.Objects.Object;
+import com.example.planesavingpassengers.Models.Objects.Passenger;
+import com.example.planesavingpassengers.Models.Objects.Plane;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -26,28 +26,28 @@
             android:value="AIzaSyAjS0X09X9MQcj3_7H5QsfdDUarfiHHEH0" />
 
         <activity
-            android:name=".View.Fragments.MapFragment"
+            android:name=".Views.Fragments.MapFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".View.Fragments.ListFragment"
+            android:name=".Views.Fragments.ListFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".View.Activity.ScoresActivity"
+            android:name=".Views.Activities.ScoresActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".View.Activity.MenuActivity"
+            android:name=".Views.Activities.MenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,7 +60,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".View.Activity.GameActivity"
+            android:name=".Views.Activities.GameActivity"
             android:exported="false">
 
             <!-- <intent-filter> -->

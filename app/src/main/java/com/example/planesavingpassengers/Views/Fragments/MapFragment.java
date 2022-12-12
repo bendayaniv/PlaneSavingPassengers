@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.View.Fragments;
+package com.example.planesavingpassengers.Views.Fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,8 +27,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //    private MapView mapView;
 
     GoogleMap mMap;
-    double latitude = 0;
-    double longitude = 0;
+//    double latitude = 0;
+//    double longitude = 0;
 
     @Nullable
     @Override
