@@ -7,7 +7,7 @@
     android:background="@drawable/sky"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".ScoresActivity">
+    tools:context=".View.Activity.ScoresActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

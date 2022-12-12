@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.View.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +17,12 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.planesavingpassengers.R;
 import com.example.planesavingpassengers.interfaces.Callback_userProtocol;
-import com.example.planesavingpassengers.views.ListFragment;
-import com.example.planesavingpassengers.views.MapFragment;
+import com.example.planesavingpassengers.View.Fragments.ListFragment;
+import com.example.planesavingpassengers.View.Fragments.MapFragment;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
@@ -36,10 +36,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
-
-import java.util.ArrayList;
-
-//import com.google.android.gms.maps.SupportMapFragment;
 
 public class ScoresActivity extends AppCompatActivity {
 
@@ -135,9 +131,6 @@ public class ScoresActivity extends AppCompatActivity {
     }
 
     private void mapAndScoreVisible() {
-//        listFragment.getDetails(scores_EDT_name.getText().toString(), score);
-
-//        GPS.getCurrentLocation(ScoresActivity.this);
         getCurrentLocation();
 
         listFragment.getDetails(scores_EDT_name.getText().toString(), score, latitude, longitude);

@@ -1,18 +1,13 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.View.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Switch;
-import android.widget.Toast;
 
+import com.example.planesavingpassengers.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 

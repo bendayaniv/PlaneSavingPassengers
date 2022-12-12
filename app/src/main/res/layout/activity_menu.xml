@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sky"
-    tools:context="MenuActivity">
+    tools:context=".View.Activity.MenuActivity">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/menu_LBL_headline"

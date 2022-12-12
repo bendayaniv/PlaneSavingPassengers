@@ -1,18 +1,23 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.Model;
 
 //import android.media.MediaPlayer;
+
+import com.example.planesavingpassengers.Model.Objects.Bird;
+import com.example.planesavingpassengers.Model.Objects.Object;
+import com.example.planesavingpassengers.Model.Objects.Passenger;
+import com.example.planesavingpassengers.Model.Objects.Plane;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ManagerActivity {
+public class GameManager {
 
     private Plane plane;
     private Object[][] objectsBoard;
     //    private int numOfObjects;
     private boolean emptyBoard;
 
-    public ManagerActivity(int life, int yLength, int xLength, int defaultXForPlane, int defaultYForPlane) {
+    public GameManager(int life, int yLength, int xLength, int defaultXForPlane, int defaultYForPlane) {
         plane = new Plane(life, defaultXForPlane, defaultYForPlane);
         objectsBoard = new Object[yLength][xLength];
 //        numOfObjects = 0;

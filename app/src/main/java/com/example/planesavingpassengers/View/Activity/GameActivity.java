@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.View.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.planesavingpassengers.BackgroundSoundService;
+import com.example.planesavingpassengers.Model.GameManager;
+import com.example.planesavingpassengers.Model.Objects.Object;
+import com.example.planesavingpassengers.MovementDetector;
+import com.example.planesavingpassengers.R;
 import com.example.planesavingpassengers.interfaces.MovementCallback;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -22,11 +27,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity {
-
-//    enum Direction {
-//        LEFT, RIGHT, STAY
-//    }
-
 
     public static final String KEY_DELAY = "KEY_DELAY";
     public static final String KEY_BUTTONS = "KEY_BUTTONS";
@@ -49,7 +49,7 @@ public class GameActivity extends AppCompatActivity {
     private ShapeableImageView[] game_IMG_hearts;
     private MaterialTextView game_LBL_score;
 
-    private ManagerActivity gameManager;
+    private GameManager gameManager;
     private Timer checkingHitTimer;
     private Timer movingObjectsTimer;
     long startTime = 0;
@@ -72,25 +72,12 @@ public class GameActivity extends AppCompatActivity {
         findViews();
 
 
-        gameManager = new ManagerActivity(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, PLANE_LINE);
+        gameManager = new GameManager(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, PLANE_LINE);
 
         // Get the details of the game from the previous activity
         Intent prevIntent = getIntent();
         DELAY = prevIntent.getIntExtra(KEY_DELAY, 1000);
         buttonsEnabled = prevIntent.getBooleanExtra(KEY_BUTTONS, true);
-
-//        ListView l = findViewById(R.id.list);;
-//        String tutorials[]
-//                = { "Algorithms", "Data Structures",
-//                "Languages", "Interview Corner",
-//                "GATE", "ISRO CS",
-//                "UGC NET CS", "CS Subjects",
-//                "Web Technologies" };
-//        ArrayAdapter<String> arr;
-//        arr
-//                = new ArrayAdapter<String>(
-//                this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, tutorials);
-//        l.setAdapter(arr);
 
         if (buttonsEnabled == true) {
             createMovingPlaneButtons();
@@ -99,8 +86,6 @@ public class GameActivity extends AppCompatActivity {
             gameActivity_FAB_left.setVisibility(View.INVISIBLE);
             gameActivity_FAB_right.setVisibility(View.INVISIBLE);
         }
-//        createMovingPlaneButtons();
-
 
         startTime = System.currentTimeMillis();
 
@@ -269,21 +254,8 @@ public class GameActivity extends AppCompatActivity {
         //Create new bird every 1 seconds
         if (seconds % 1 == 0) {
             gameManager.createNewBird(-1, X_LENGTH);
-//            gameManager.checkTheAbilityToCreateNewBird(X_LENGTH);
         }
     }
-
-//    public boolean checkIfCrash() {
-//        boolean ans = gameManager.checkIfCrash(PLANE_LINE);
-//        if (ans == false) {
-//            if (gameManager.checkIfSave(PLANE_LINE)) {
-//                vibrateAll();
-//                saveSound();
-//                game_LBL_score.setText("" + gameManager.getPlane().getScore());
-//            }
-//        }
-//        return ans;
-//    }
 
     public void checkIfSave() {
         if (gameManager.checkIfSave(PLANE_LINE)) {
@@ -296,7 +268,6 @@ public class GameActivity extends AppCompatActivity {
     private void planeExploded() {
         stopTimers();
         explosionToastAndSound();
-//        loadImage(gameManager.getPlane().getExplodeImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
 
         // Delivering the score to the scores screen
         scoresIntent = new Intent(GameActivity.this, ScoresActivity.class);

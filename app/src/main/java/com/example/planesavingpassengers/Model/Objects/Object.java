@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.Model.Objects;
 
 public class Object {
     private int x;

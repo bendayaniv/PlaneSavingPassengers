@@ -1,8 +1,7 @@
-package com.example.planesavingpassengers.views;
+package com.example.planesavingpassengers.View.Fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.planesavingpassengers.R;
 import com.example.planesavingpassengers.interfaces.Callback_userProtocol;
@@ -48,6 +46,7 @@ public class ListFragment extends Fragment {
         scoresList.add("7");
         scoresList.add("8");
         scoresList.add("9");
+        scoresList.add("10");
 
         arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, scoresList);
 
@@ -79,11 +78,4 @@ public class ListFragment extends Fragment {
         scoresList.add(name + " " + score + " " + latitude + " " + longitude);
         arrayAdapter.notifyDataSetChanged();
     }
-
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.fragment_list);
-//    }
 }
