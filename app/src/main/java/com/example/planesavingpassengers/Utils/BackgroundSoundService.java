@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.Utils;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.example.planesavingpassengers.R;
 
 public class BackgroundSoundService extends Service {
     MediaPlayer mediaPlayer;

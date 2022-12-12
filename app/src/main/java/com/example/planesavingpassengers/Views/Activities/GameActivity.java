@@ -13,10 +13,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.planesavingpassengers.BackgroundSoundService;
+import com.example.planesavingpassengers.Utils.BackgroundSoundService;
 import com.example.planesavingpassengers.Models.GameManager;
 import com.example.planesavingpassengers.Models.Objects.Object;
-import com.example.planesavingpassengers.MovementDetector;
+import com.example.planesavingpassengers.Utils.MovementDetector;
 import com.example.planesavingpassengers.R;
 import com.example.planesavingpassengers.Interfaces.MovementCallback;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;

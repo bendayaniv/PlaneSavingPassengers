@@ -75,7 +75,7 @@
                 android:value="" />
         </activity>
 
-        <service android:name=".BackgroundSoundService" />
+        <service android:name=".Utils.BackgroundSoundService" />
     </application>
 
 </manifest>

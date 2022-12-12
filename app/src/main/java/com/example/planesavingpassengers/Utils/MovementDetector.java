@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers;
+package com.example.planesavingpassengers.Utils;
 
 import android.content.Context;
 import android.hardware.Sensor;
