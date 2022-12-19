@@ -42,6 +42,8 @@ public class GameActivity extends AppCompatActivity {
     private final String LEFT_DIRECTION = "LEFT";
     private final String RIGHT_DIRECTION = "RIGHT";
     private final String STAY_IN_PUT = "";
+    private final boolean DO_NOT_MOVE_PLANE_IMAGE = false;
+    private final boolean MOVE_PLANE_IMAGE = true;
 
     private ExtendedFloatingActionButton gameActivity_FAB_left;
     private ExtendedFloatingActionButton gameActivity_FAB_right;
@@ -87,21 +89,28 @@ public class GameActivity extends AppCompatActivity {
             gameActivity_FAB_right.setVisibility(View.INVISIBLE);
         }
 
+        loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
         startTime = System.currentTimeMillis();
 
     }
 
-
+    /**
+     * This methos plays the background sound
+     */
     public void PlayBackgroundSound() {
         BackgroundSoundIntent = new Intent(GameActivity.this, BackgroundSoundService.class);
         startService(BackgroundSoundIntent);
     }
 
+    /**
+     * This method finds all the views in the activity
+     */
     private void findViews() {
         game_LBL_score = findViewById(R.id.game_LBL_score);
         gameActivity_FAB_left = findViewById(R.id.gameActivity_FAB_left);
         gameActivity_FAB_right = findViewById(R.id.gameActivity_FAB_right);
-        gameBoard = new ShapeableImageView[][]{{findViewById(R.id.game_IMG_0_0), findViewById(R.id.game_IMG_0_1), findViewById(R.id.game_IMG_0_2), findViewById(R.id.game_IMG_0_3), findViewById(R.id.game_IMG_0_4)},
+        gameBoard = new ShapeableImageView[][]{
+                {findViewById(R.id.game_IMG_0_0), findViewById(R.id.game_IMG_0_1), findViewById(R.id.game_IMG_0_2), findViewById(R.id.game_IMG_0_3), findViewById(R.id.game_IMG_0_4)},
                 {findViewById(R.id.game_IMG_1_0), findViewById(R.id.game_IMG_1_1), findViewById(R.id.game_IMG_1_2), findViewById(R.id.game_IMG_1_3), findViewById(R.id.game_IMG_1_4)},
                 {findViewById(R.id.game_IMG_2_0), findViewById(R.id.game_IMG_2_1), findViewById(R.id.game_IMG_2_2), findViewById(R.id.game_IMG_2_3), findViewById(R.id.game_IMG_2_4)},
                 {findViewById(R.id.game_IMG_3_0), findViewById(R.id.game_IMG_3_1), findViewById(R.id.game_IMG_3_2), findViewById(R.id.game_IMG_3_3), findViewById(R.id.game_IMG_3_4)},
@@ -121,29 +130,47 @@ public class GameActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * This method creates the moving plane buttons
+     */
     private void createMovingPlaneButtons() {
-        gameActivity_FAB_right.setOnClickListener(v -> movePlane(RIGHT_DIRECTION));
-        gameActivity_FAB_left.setOnClickListener(v -> movePlane(LEFT_DIRECTION));
+        gameActivity_FAB_right.setOnClickListener(v -> movePlane(RIGHT_DIRECTION, MOVE_PLANE_IMAGE));
+        gameActivity_FAB_left.setOnClickListener(v -> movePlane(LEFT_DIRECTION, MOVE_PLANE_IMAGE));
     }
 
+    /**
+     * This method moves the plane
+     */
     private void initStepDetector() {
+        // Create a SensorManager to listen to step alerts
         movementDetector = new MovementDetector(this, new MovementCallback() {
             @Override
             public void stepRight() {
-                movePlane(RIGHT_DIRECTION);
+                movePlane(RIGHT_DIRECTION, MOVE_PLANE_IMAGE);
             }
 
             @Override
             public void stepLeft() {
-                movePlane(LEFT_DIRECTION);
+                movePlane(LEFT_DIRECTION, MOVE_PLANE_IMAGE);
             }
         });
     }
 
+    /**
+     * This method loads the images to the game board
+     *
+     * @param imageNum  == the image number
+     * @param imageView == the image view
+     */
     private void loadImage(int imageNum, ShapeableImageView imageView) {
         Glide.with(this).load(imageNum).fitCenter().into(imageView);
     }
 
+    /**
+     * This method deletes the image from the game board
+     *
+     * @param imageView == the image view
+     */
     private void deleteImage(ShapeableImageView imageView) {
         Glide.with(this).clear(imageView);
     }
@@ -153,17 +180,21 @@ public class GameActivity extends AppCompatActivity {
      * Second - we check if the plane goes right or left and move him
      * Then - we load the plane image to his new location
      *
-     * @param direction = the direction of the plane
+     * @param direction  = the direction of the plane
+     * @param indication = indication if we need to move the plane image
      */
-    private void movePlane(String direction) {
-        if (!direction.equals(STAY_IN_PUT)) {
-            deleteImage(gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
-            if (direction.equals(RIGHT_DIRECTION))
-                gameManager.movePlane(STEP_RIGHT_OF_PLANE);
-            else if (direction.equals(LEFT_DIRECTION))
-                gameManager.movePlane(STEP_LEFT_OF_PLANE);
+    private void movePlane(String direction, boolean indication) {
+        if (indication == true) {
+            if (!direction.equals(STAY_IN_PUT)) {
+                deleteImage(gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
+                if (direction.equals(RIGHT_DIRECTION)) {
+                    gameManager.movePlane(STEP_RIGHT_OF_PLANE);
+                } else if (direction.equals(LEFT_DIRECTION)) {
+                    gameManager.movePlane(STEP_LEFT_OF_PLANE);
+                }
+            }
+            loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
         }
-        loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
     }
 
     /**
@@ -172,7 +203,10 @@ public class GameActivity extends AppCompatActivity {
     private void cleanTheBoard() {
         for (int i = Y_LENGTH - 1; i > 0; i--) {
             for (int j = 0; j < X_LENGTH; j++) {
-                deleteImage(gameBoard[i][j]);
+                // check if there is plane image in the board
+                if (i != 10 || j != gameManager.getPlane().getX()) {
+                    deleteImage(gameBoard[i][j]);
+                }
             }
         }
     }
@@ -187,9 +221,12 @@ public class GameActivity extends AppCompatActivity {
         cleanTheBoard();
         gameManager.moveObjectsDown(PLANE_LINE, X_LENGTH);
         loadAllObjects();
-        movePlane(STAY_IN_PUT);
+        movePlane(STAY_IN_PUT, DO_NOT_MOVE_PLANE_IMAGE);
     }
 
+    /**
+     * This method loads all the objects images to the game board
+     */
     private void loadAllObjects() {
         Object[][] board = gameManager.getBoard();
         for (int i = 0; i < board.length; i++) {
@@ -202,6 +239,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method play the explosion sound when the plane is hit by an bird for the third time
+     */
     private void explosionToastAndSound() {
         //Make sound
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.explosion);
@@ -210,6 +250,9 @@ public class GameActivity extends AppCompatActivity {
         Toast.makeText(this, "You exploded!", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * This method play the crash sound when the plane is hit by an bird
+     */
     private void crashToastAndSound() {
         //Make sound
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.crowd_panic);
@@ -219,12 +262,18 @@ public class GameActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * This method play the save sound when the plane save passenger
+     */
     private void saveSound() {
         //Make sound
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.relieved_sigh);
         mediaPlayer.start();
     }
 
+    /**
+     * Make vibrations
+     */
     private void vibrateAll() {
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -240,6 +289,9 @@ public class GameActivity extends AppCompatActivity {
         movingObjectsTimer.cancel();
     }
 
+    /**
+     * This method refresh the game board and create new bird every 1 second
+     */
     private void refreshUI() {
         long millis = System.currentTimeMillis() - startTime;
         int seconds = (int) (millis / 1000);
@@ -257,14 +309,24 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method checks if the plane save paasenger
+     * If it does - vibrate, play the save sound, change the score and relaoad the plane image
+     */
     public void checkIfSave() {
         if (gameManager.checkIfSave(PLANE_LINE)) {
             vibrateAll();
             saveSound();
             game_LBL_score.setText("" + gameManager.getPlane().getScore());
+            deleteImage(gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
+            loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
         }
     }
 
+    /**
+     * Happens when the plane hit by an bird for the third time
+     * Stop the timers, play the explosion sound, show the toast and move to the game over activity
+     */
     private void planeExploded() {
         stopTimers();
         explosionToastAndSound();
@@ -277,6 +339,10 @@ public class GameActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Happens when the plane hit by an bird (and he still can play)
+     * Drop one heart, play the crash sound, show the toast, clean the board and reload the plane image
+     */
     private void birdsHitPlane() {
         game_IMG_hearts[game_IMG_hearts.length - gameManager.getPlane().getNumOfCrash()].setVisibility(View.INVISIBLE);
 
@@ -286,8 +352,12 @@ public class GameActivity extends AppCompatActivity {
 
         gameManager.getPlane().setY(PLANE_LINE);
         gameManager.getPlane().setX(DEFAULT_X_FOR_PLANE);
+        loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
     }
 
+    /**
+     * Moving all the objects (except the plane) one step down every DELAY milliseconds (according to the player choice)
+     */
     private void startMovingObjectsTimer() {
         movingObjectsTimer = new Timer();
         movingObjectsTimer.schedule(new TimerTask() {
@@ -300,6 +370,9 @@ public class GameActivity extends AppCompatActivity {
         }, DELAY, DELAY);
     }
 
+    /**
+     * Checking if the plane hit any object every 0.1 seconds
+     */
     private void startCheckHitTimer() {
         checkingHitTimer = new Timer();
         checkingHitTimer.scheduleAtFixedRate(new TimerTask() {
@@ -314,6 +387,9 @@ public class GameActivity extends AppCompatActivity {
                         } else if (gameManager.getPlane().getNumOfCrash() != 0) {
                             birdsHitPlane();
                         }
+                    } else {
+                        cleanTheBoard();
+                        loadAllObjects();
                     }
                 });
             }

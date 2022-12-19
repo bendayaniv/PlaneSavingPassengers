@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.planesavingpassengers.Models.Objects.Player;
 import com.example.planesavingpassengers.R;
 import com.example.planesavingpassengers.Interfaces.Callback_userProtocol;
 import com.example.planesavingpassengers.Views.Fragments.ListFragment;
@@ -37,12 +38,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
-public class ScoresActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class ScoresActivity extends AppCompatActivity {
     public static final String KEY_SCORE = "KEY_SCORE";
     public static final String INDICATION = "INDICATION";
 
     private int score = 0;
+    // Indication for if moving the plane image or not
     public boolean indication = true;
 
     private MaterialTextView scores_LBL_headline;
@@ -62,17 +65,20 @@ public class ScoresActivity extends AppCompatActivity {
     double currentLatitude = 0;
     double currentLongitude = 0;
 
+    /**
+     * This callback is created when the activity is created
+     */
     Callback_userProtocol callback_userProtocol = new Callback_userProtocol() {
         @Override
         public void sendLocation(double latitude, double longitude) {
-//            showUserLocation(latitude, longitude);
             mapFragment.zoom(latitude, longitude);
         }
-    };
 
-    private void showUserLocation(double latitude, double longitude) {
-        mapFragment.zoom(latitude, longitude);
-    }
+        @Override
+        public void sendAllTop10Locations(ArrayList<Player> players) {
+            mapFragment.updatePlayersList(players);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,25 +94,25 @@ public class ScoresActivity extends AppCompatActivity {
 
         createFragments();
 
-//        locationRequest = LocationRequest.create();
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        locationRequest.setInterval(5000);
-//        locationRequest.setFastestInterval(2000);
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(2000);
 
         Intent prevIntent = getIntent();
         score = prevIntent.getIntExtra(KEY_SCORE, 0);
         indication = prevIntent.getBooleanExtra(INDICATION, true);
 
-//        if (indication == true) {
-//            hideMapAndList();
-//        } else
         if (indication == false) {
-            mapAndScoreVisible();
+            hideSaveScore();
         }
 
         getCurrentLocation();
     }
 
+    /**
+     * This method is responsible for creating the fragments
+     */
     private void createFragments() {
         listFragment = new ListFragment();
         listFragment.setCallback(callback_userProtocol);
@@ -117,19 +123,54 @@ public class ScoresActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().add(R.id.scores_FRAM_map, mapFragment).commit();
     }
 
+    /**
+     * This method sets the buttons in the activity
+     */
     private void buttons() {
-        scores_BTN_saveScore.setOnClickListener(v -> {
-            if (/*currentLatitude == 0 && currentLongitude == 0*/isGPSEnabled() == false) {
-                Toast.makeText(this, "Need to turn on your GPS", Toast.LENGTH_SHORT).show();
-//                return;
-            } else {
-                listFragment.getDetails(/*scores_EDT_name.getText().toString(), score, */currentLatitude, currentLongitude);
-                mapAndScoreVisible();
-            }
-        });
+        scores_BTN_saveScore.setOnClickListener(v -> saveScore());
         scores_BTN_backToMenu.setOnClickListener(v -> backToMenu());
     }
 
+    /**
+     * This method is responsible for saving the score
+     */
+    private void saveScore() {
+        // TODO: To deal with the case that if the user don't get permission to his location
+        if (scores_EDT_name.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
+        } else if (isGPSEnabled() == false) {
+            Toast.makeText(this, "Need to turn on your GPS", Toast.LENGTH_SHORT).show();
+            turnOnGPS(ScoresActivity.this);
+            if (isGPSEnabled() == true) {
+                getCurrentLocation();
+            }
+        } else {
+            getCurrentLocation();
+            // The default location is (0, 0), and it is in the middle of the ocean, and it is not a valid location,
+            // so I wait for the location to be updated
+            if (currentLatitude == 0 && currentLongitude == 0) {
+                Toast.makeText(this, "Need to sync", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            listFragment.getDetails(new Player(scores_EDT_name.getText().toString(), score, currentLatitude, currentLongitude));
+            mapFragment.refreshMarkerOnMap();
+            hideSaveScore();
+        }
+    }
+
+    /**
+     * This method is responsible for going back to the menu
+     */
+    private void backToMenu() {
+        listFragment.saveToSP();
+        Intent menuIntent = new Intent(this, MenuActivity.class);
+        startActivity(menuIntent);
+        finish();
+    }
+
+    /**
+     * This method is responsible for finding the views in the activity
+     */
     private void findViews() {
         scores_EDT_name = findViewById(R.id.scores_EDT_name);
         scores_BTN_saveScore = findViewById(R.id.scores_BTN_saveScore);
@@ -141,42 +182,18 @@ public class ScoresActivity extends AppCompatActivity {
         scores_BTN_backToMenu = findViewById(R.id.scores_BTN_backToMenu);
     }
 
-    private void hideMapAndList() {
-        if (indication == true) {
-            scores_LBL_headline.setVisibility(View.INVISIBLE);
-            scores_FRAM_list.setVisibility(View.INVISIBLE);
-            scores_VIEW_break.setVisibility(View.INVISIBLE);
-            scores_FRAM_map.setVisibility(View.INVISIBLE);
-            scores_BTN_backToMenu.setVisibility(View.INVISIBLE);
-        } else if (indication == false) {
-            mapAndScoreVisible();
-        }
-    }
-
-    private void mapAndScoreVisible() {
-        getCurrentLocation();
-
-//        Toast.makeText(this, "Latitude: " + currentLatitude, Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "Longitude: " + currentLongitude, Toast.LENGTH_SHORT).show();
-
-//        listFragment.getDetails(/*scores_EDT_name.getText().toString(), score, */currentLatitude, currentLongitude);
-//        listFragment.getDetails(scores_EDT_name.getText().toString(), score, 32.5, 22.1);
-
-
+    /**
+     * This method is responsible for hiding the save score
+     */
+    private void hideSaveScore() {
         scores_EDT_name.setVisibility(View.INVISIBLE);
         scores_BTN_saveScore.setVisibility(View.INVISIBLE);
 
-        scores_LBL_headline.setVisibility(View.VISIBLE);
-        scores_FRAM_list.setVisibility(View.VISIBLE);
-        scores_VIEW_break.setVisibility(View.VISIBLE);
-        scores_FRAM_map.setVisibility(View.VISIBLE);
-        scores_BTN_backToMenu.setVisibility(View.VISIBLE);
-    }
-
-    private void backToMenu() {
-        Intent menuIntent = new Intent(this, MenuActivity.class);
-        startActivity(menuIntent);
-        finish();
+//        scores_LBL_headline.setVisibility(View.VISIBLE);
+//        scores_FRAM_list.setVisibility(View.VISIBLE);
+//        scores_VIEW_break.setVisibility(View.VISIBLE);
+//        scores_FRAM_map.setVisibility(View.VISIBLE);
+//        scores_BTN_backToMenu.setVisibility(View.VISIBLE);
     }
 
 
@@ -211,26 +228,24 @@ public class ScoresActivity extends AppCompatActivity {
 //        }
 //    }
 
+    // The next 3 methods are for getting the current location of the user:
 
+    /**
+     * This method is responsible for getting the current location of the user
+     */
     public void getCurrentLocation() {
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(2000);
-//        LocationResult locationResult;
-//        locationResult.getLocations().lastIndexOf()
+        //
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            Toast.makeText(ScoresActivity.this, "0", Toast.LENGTH_SHORT).show();
+            // Check if the user gave permission to his location
             if (ActivityCompat.checkSelfPermission(ScoresActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(ScoresActivity.this, "1", Toast.LENGTH_SHORT).show();
+                // Check if the GPS is enabled
                 if (isGPSEnabled()) {
-//                    Toast.makeText(ScoresActivity.this, "2", Toast.LENGTH_SHORT).show();
+                    // Get the location
                     LocationServices.getFusedLocationProviderClient(ScoresActivity.this)
                             .requestLocationUpdates(locationRequest, new LocationCallback() {
                                 @Override
                                 public void onLocationResult(@NonNull LocationResult locationResult) {
                                     super.onLocationResult(locationResult);
-//                                    Toast.makeText(ScoresActivity.this, "3", Toast.LENGTH_SHORT).show();
 
                                     LocationServices.getFusedLocationProviderClient(ScoresActivity.this)
                                             .removeLocationUpdates(this);
@@ -240,22 +255,29 @@ public class ScoresActivity extends AppCompatActivity {
                                         int index = locationResult.getLocations().size() - 1;
                                         currentLatitude = locationResult.getLocations().get(index).getLatitude();
                                         currentLongitude = locationResult.getLocations().get(index).getLongitude();
-//                                        listFragment.getDetails(scores_EDT_name.getText().toString(),
-//                                                score, 0, 0);
                                     }
                                 }
                             }, Looper.getMainLooper());
-//                    Toast.makeText(ScoresActivity.this, "4", Toast.LENGTH_SHORT).show();
-                } else {
+                    ;
+                }
+                // If the GPS is not enabled
+                else {
                     turnOnGPS(ScoresActivity.this);
                 }
-            } else {
+            }
+            // If the user didn't give permission to his location
+            else {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
         }
     }
 
 
+    /**
+     * This method is responsible for checking if the GPS is enabled
+     *
+     * @param context == the context of the activity
+     */
     private void turnOnGPS(Context context) {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
@@ -294,7 +316,11 @@ public class ScoresActivity extends AppCompatActivity {
         });
     }
 
-    // Check if GPS is enabled
+    /**
+     * This method is responsible for checking if the GPS is enabled
+     *
+     * @return == true if the GPS is enabled, false otherwise
+     */
     private boolean isGPSEnabled() {
         LocationManager locationManager = null;
         boolean isGPSenabled = false;

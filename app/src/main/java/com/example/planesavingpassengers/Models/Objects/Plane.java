@@ -29,11 +29,7 @@ public class Plane extends Object {
         return score;
     }
 
-    public void setScore(/*int addingScore*/) {
+    public void setScore() {
         this.score += 10;
-    }
-
-    public void resetScoreForNewGame() {
-        this.score = 0;
     }
 }

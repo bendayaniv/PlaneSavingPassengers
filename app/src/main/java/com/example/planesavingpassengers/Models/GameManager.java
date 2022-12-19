@@ -1,7 +1,5 @@
 package com.example.planesavingpassengers.Models;
 
-//import android.media.MediaPlayer;
-
 import com.example.planesavingpassengers.Models.Objects.Bird;
 import com.example.planesavingpassengers.Models.Objects.Object;
 import com.example.planesavingpassengers.Models.Objects.Passenger;
@@ -14,28 +12,31 @@ public class GameManager {
 
     private Plane plane;
     private Object[][] objectsBoard;
-    //    private int numOfObjects;
     private boolean emptyBoard;
 
     public GameManager(int life, int yLength, int xLength, int defaultXForPlane, int defaultYForPlane) {
         plane = new Plane(life, defaultXForPlane, defaultYForPlane);
         objectsBoard = new Object[yLength][xLength];
-//        numOfObjects = 0;
         emptyBoard = true;
     }
 
-//    public int getNumOfObjects() {
-//        return numOfObjects;
-//    }
-
+    /**
+     * @return true if the board is empty, false otherwise
+     */
     public boolean isEmptyBoard() {
         return emptyBoard;
     }
 
+    /**
+     * @return the board of objects
+     */
     public Object[][] getBoard() {
         return objectsBoard;
     }
 
+    /**
+     * @return the plane
+     */
     public Plane getPlane() {
         return plane;
     }
@@ -62,7 +63,6 @@ public class GameManager {
      * @param boardLimit the limit to the objects on the board
      */
     public void moveObjectsDown(int boardLimit, int xScale) {
-//        if (numOfObjects != 0) {
         if (emptyBoard == false) {
             for (int i = objectsBoard.length - 1; i >= 0; i--) {
                 for (int j = 0; j < objectsBoard[i].length; j++) {
@@ -78,16 +78,17 @@ public class GameManager {
             }
         }
         createObjects(xScale);
-//        checkTheAbilityToCreateNewBird(xScale);
-//        createNewBird(-1, xScale);
     }
 
-    /*private*/
+    /**
+     * Create new objects on the board
+     *
+     * @param xScale == the limit to the objects on the board (x axis)
+     */
     public void createObjects(int xScale) {
         int random = new Random().nextInt(10);
         int randomNumOfBirds = new Random().nextInt(4);
         if (random > 0 && randomNumOfBirds != 0) {
-//            emptyBoard = false;
             // Create only passengers
             if (random < 3) {
                 createNewPassenger(xScale);
@@ -98,21 +99,22 @@ public class GameManager {
                     checkTheAbilityToCreateNewBird(xScale);
                 }
                 // Create also passengers
-                if (random == 9) {
+                if (random >= 8) {
                     createNewPassenger(xScale);
                 }
             }
         }
     }
 
-
+    /**
+     * Clear the board from all objects
+     */
     public void clearAllObjects() {
         for (int i = objectsBoard.length - 1; i >= 0; i--) {
             for (int j = 0; j < objectsBoard[i].length; j++) {
                 objectsBoard[i][j] = null;
             }
         }
-//        numOfObjects = 0;
         emptyBoard = true;
     }
 
@@ -125,7 +127,6 @@ public class GameManager {
     public void checkTheAbilityToCreateNewBird(int xScale) {
         // Default value
         int theLimitedIndex = -1;
-//        if (numOfObjects > 0) {
         if (emptyBoard == false) {
 
             //Array list of all the x-scales of the potential problematic birds for creating a new one
@@ -181,32 +182,35 @@ public class GameManager {
     /**
      * Create new bird
      *
-     * @param index == indicates if can be anywhere (-1) or can not be in specific place(!-1)
+     * @param index          == indicates if can be anywhere (-1) or can not be in specific place(!-1)
+     * @param howManyOptions == the limit on the x scale
      */
     public void createNewBird(int index, int howManyOptions) {
-////        //The extra 1 is for the option to not create
-//        int randomX = new Random().nextInt(howManyOptions + 1);
+        //The extra 1 is for the option to not create
         int randomX = new Random().nextInt(howManyOptions);
-//        if (randomX >= 0 && randomX <= howManyOptions - 1) {
-//        if (randomX >= 0 && randomX <= 2) {
         if (index != -1 || objectsBoard[1][randomX] != null) {
-            while (randomX == index || objectsBoard[1][randomX] != null) {
+            while (objectsBoard[1].length == randomX || randomX == index || objectsBoard[1][randomX] != null) {
                 randomX = new Random().nextInt(howManyOptions + 1);
             }
         }
         objectsBoard[1][randomX] = new Bird(randomX, 1);
-//            numOfObjects++;
         emptyBoard = false;
 //        }
     }
 
+
+    /**
+     * Create new passenger
+     *
+     * @param howManyOptions == the limit on the x scale
+     */
     private void createNewPassenger(int howManyOptions) {
         int randomX = new Random().nextInt(howManyOptions);
         while (objectsBoard[1][randomX] != null) {
             randomX = new Random().nextInt(howManyOptions);
         }
         objectsBoard[1][randomX] = new Passenger(randomX, 1);
-//        emptyBoard = false;
+        emptyBoard = false;
     }
 
     /**
@@ -226,6 +230,9 @@ public class GameManager {
         return false;
     }
 
+    /**
+     * Raise the number of crashes in 1
+     */
     private void raiseCrashNumber() {
         int crash = getPlane().getNumOfCrash();
         if (crash < getPlane().getLife()) {
@@ -234,6 +241,12 @@ public class GameManager {
         }
     }
 
+    /**
+     * Check if there is a clash between a passenger and the plane
+     * If it does, it raise the score
+     *
+     * @return true if does, false if does not
+     */
     public boolean checkIfSave(int planeLine) {
         for (int i = 0; i < objectsBoard[planeLine].length; i++) {
             if (objectsBoard[planeLine][i] instanceof Passenger && plane.getX() == i) {
@@ -245,10 +258,4 @@ public class GameManager {
         }
         return false;
     }
-
-//    private void raiseScore() {
-//        getPlane().setScore();
-//    }
-
-
 }

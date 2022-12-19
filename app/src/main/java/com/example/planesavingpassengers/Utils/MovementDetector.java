@@ -13,8 +13,6 @@ public class MovementDetector {
     private SensorManager sensorManager;
     private Sensor sensor/*accelerometerSensor*/;
 
-//    private int stepCountX = 0;
-//    private int stepCountY = 0;
     private long timeStemp = 0;
 
     private SensorEventListener sensorEventListener;
@@ -48,18 +46,16 @@ public class MovementDetector {
         };
     }
 
-    private void sensePlaneMovement(float x/*, float y*/) {
+    private void sensePlaneMovement(float x) {
         if (System.currentTimeMillis() - timeStemp > 100) {
             timeStemp = System.currentTimeMillis();
             if (x > 4.0) {
-//                stepCountX++;
                 // Notify the listener
                 if (movementCallback != null) {
                     movementCallback.stepLeft();
                 }
             }
             if (x < -4.0) {
-//                stepCountY++;
                 // Notify the listener
                 if (movementCallback != null) {
                     movementCallback.stepRight();
@@ -75,13 +71,5 @@ public class MovementDetector {
     public void stop() {
         sensorManager.unregisterListener(sensorEventListener);
     }
-
-//    public int getStepCountX() {
-//        return stepCountX;
-//    }
-//
-//    public int getStepCountY() {
-//        return stepCountY;
-//    }
 }
 
