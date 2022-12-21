@@ -11,9 +11,9 @@ import com.example.planesavingpassengers.Interfaces.MovementCallback;
 public class MovementDetector {
     private MovementCallback movementCallback;
     private SensorManager sensorManager;
-    private Sensor sensor/*accelerometerSensor*/;
+    private Sensor accelerometerSensor;
 
-    private long timeStemp = 0;
+    private long timeStamp = 0;
 
     private SensorEventListener sensorEventListener;
 
@@ -21,7 +21,7 @@ public class MovementDetector {
         // Get the sensor manager
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE)/*sensorManager*/;
         // Get the accelerometer sensor
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         // Get the step counter sensor
         this.movementCallback = _movementCallback;
 
@@ -34,9 +34,7 @@ public class MovementDetector {
             public void onSensorChanged(SensorEvent event) {
                 // Get the sensor type
                 float x = event.values[0];
-//                float y = event.values[1];
-
-                sensePlaneMovement(x/*, y*/);
+                sensePlaneMovement(x);
             }
 
             @Override
@@ -47,8 +45,8 @@ public class MovementDetector {
     }
 
     private void sensePlaneMovement(float x) {
-        if (System.currentTimeMillis() - timeStemp > 100) {
-            timeStemp = System.currentTimeMillis();
+        if (System.currentTimeMillis() - timeStamp > 100) {
+            timeStamp = System.currentTimeMillis();
             if (x > 4.0) {
                 // Notify the listener
                 if (movementCallback != null) {
@@ -65,7 +63,7 @@ public class MovementDetector {
     }
 
     public void start() {
-        sensorManager.registerListener(sensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(sensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void stop() {

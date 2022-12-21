@@ -6,7 +6,6 @@ public class Player {
     private double latitude;
     private double longitude;
 
-
     public Player() {
     }
 

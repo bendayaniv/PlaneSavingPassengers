@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.Views.Activities;
+package com.example.planesavingpassengers.Controller.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +28,7 @@ import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String KEY_DELAY = "KEY_DELAY";
     public static final String KEY_BUTTONS = "KEY_BUTTONS";
     private int DELAY = 1000;
@@ -44,6 +45,7 @@ public class GameActivity extends AppCompatActivity {
     private final String STAY_IN_PUT = "";
     private final boolean DO_NOT_MOVE_PLANE_IMAGE = false;
     private final boolean MOVE_PLANE_IMAGE = true;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     private ExtendedFloatingActionButton gameActivity_FAB_left;
     private ExtendedFloatingActionButton gameActivity_FAB_right;
@@ -69,7 +71,7 @@ public class GameActivity extends AppCompatActivity {
         //Set direction on all devices from LEFT to RIGHT
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
-        PlayBackgroundSound();
+        playBackgroundSound();
 
         findViews();
 
@@ -91,13 +93,12 @@ public class GameActivity extends AppCompatActivity {
 
         loadImage(gameManager.getPlane().getObjectImage(), gameBoard[gameManager.getPlane().getY()][gameManager.getPlane().getX()]);
         startTime = System.currentTimeMillis();
-
     }
 
     /**
      * This methos plays the background sound
      */
-    public void PlayBackgroundSound() {
+    public void playBackgroundSound() {
         BackgroundSoundIntent = new Intent(GameActivity.this, BackgroundSoundService.class);
         startService(BackgroundSoundIntent);
     }
@@ -128,32 +129,6 @@ public class GameActivity extends AppCompatActivity {
                 findViewById(R.id.game_IMG_heart2),
                 findViewById(R.id.game_IMG_heart3)
         };
-    }
-
-    /**
-     * This method creates the moving plane buttons
-     */
-    private void createMovingPlaneButtons() {
-        gameActivity_FAB_right.setOnClickListener(v -> movePlane(RIGHT_DIRECTION, MOVE_PLANE_IMAGE));
-        gameActivity_FAB_left.setOnClickListener(v -> movePlane(LEFT_DIRECTION, MOVE_PLANE_IMAGE));
-    }
-
-    /**
-     * This method moves the plane
-     */
-    private void initStepDetector() {
-        // Create a SensorManager to listen to step alerts
-        movementDetector = new MovementDetector(this, new MovementCallback() {
-            @Override
-            public void stepRight() {
-                movePlane(RIGHT_DIRECTION, MOVE_PLANE_IMAGE);
-            }
-
-            @Override
-            public void stepLeft() {
-                movePlane(LEFT_DIRECTION, MOVE_PLANE_IMAGE);
-            }
-        });
     }
 
     /**
@@ -198,6 +173,33 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
+     * This method creates the moving plane buttons
+     */
+    private void createMovingPlaneButtons() {
+        gameActivity_FAB_right.setOnClickListener(v -> movePlane(RIGHT_DIRECTION, MOVE_PLANE_IMAGE));
+        gameActivity_FAB_left.setOnClickListener(v -> movePlane(LEFT_DIRECTION, MOVE_PLANE_IMAGE));
+    }
+
+    /**
+     * This method moves the plane
+     */
+    private void initStepDetector() {
+        // Create a SensorManager to listen to step alerts
+        movementDetector = new MovementDetector(this, new MovementCallback() {
+            @Override
+            public void stepRight() {
+                movePlane(RIGHT_DIRECTION, MOVE_PLANE_IMAGE);
+            }
+
+            @Override
+            public void stepLeft() {
+                movePlane(LEFT_DIRECTION, MOVE_PLANE_IMAGE);
+            }
+        });
+    }
+
+
+    /**
      * Clean the game board
      */
     private void cleanTheBoard() {
@@ -206,6 +208,21 @@ public class GameActivity extends AppCompatActivity {
                 // check if there is plane image in the board
                 if (i != 10 || j != gameManager.getPlane().getX()) {
                     deleteImage(gameBoard[i][j]);
+                }
+            }
+        }
+    }
+
+    /**
+     * This method loads all the objects images to the game board
+     */
+    private void loadAllObjects() {
+        Object[][] board = gameManager.getBoard();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                //Checking if there is exist object in this location and if it reached to the limit he can go out of the board
+                if (board[i][j] != null && board[i][j].getY() <= PLANE_LINE + 1) {
+                    loadImage(board[i][j].getObjectImage(), gameBoard[board[i][j].getY()][board[i][j].getX()]);
                 }
             }
         }
@@ -222,21 +239,6 @@ public class GameActivity extends AppCompatActivity {
         gameManager.moveObjectsDown(PLANE_LINE, X_LENGTH);
         loadAllObjects();
         movePlane(STAY_IN_PUT, DO_NOT_MOVE_PLANE_IMAGE);
-    }
-
-    /**
-     * This method loads all the objects images to the game board
-     */
-    private void loadAllObjects() {
-        Object[][] board = gameManager.getBoard();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                //Checking if there is exist object in this location and if it reached to the limit he can go out of the board
-                if (board[i][j] != null && board[i][j].getY() <= PLANE_LINE + 1) {
-                    loadImage(board[i][j].getObjectImage(), gameBoard[board[i][j].getY()][board[i][j].getX()]);
-                }
-            }
-        }
     }
 
     /**

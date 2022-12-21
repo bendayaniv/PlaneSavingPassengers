@@ -5,7 +5,6 @@ import com.example.planesavingpassengers.Models.Objects.Object;
 import com.example.planesavingpassengers.Models.Objects.Passenger;
 import com.example.planesavingpassengers.Models.Objects.Plane;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class GameManager {
@@ -58,26 +57,80 @@ public class GameManager {
     }
 
     /**
-     * Move all exists objects one step down
+     * Create new bird
      *
-     * @param boardLimit the limit to the objects on the board
+     * @param index          == indicates if can be anywhere (-1) or can not be in specific place(!-1)
+     * @param howManyOptions == the limit on the x scale
      */
-    public void moveObjectsDown(int boardLimit, int xScale) {
-        if (emptyBoard == false) {
-            for (int i = objectsBoard.length - 1; i >= 0; i--) {
-                for (int j = 0; j < objectsBoard[i].length; j++) {
-                    if (objectsBoard[i][j] != null && objectsBoard[i][j].getY() == boardLimit + 1) {
-                        objectsBoard[i][j] = null;
-                    } else if (objectsBoard[i][j] != null) {
-                        int tmpY = objectsBoard[i][j].getY() + 1;
-                        objectsBoard[i][j].setY(tmpY);
-                        objectsBoard[i + 1][j] = objectsBoard[i][j];
-                        objectsBoard[i][j] = null;
-                    }
-                }
+    public void createNewBird(int index, int howManyOptions) {
+        //The extra 1 is for the option to not create
+        int randomX = new Random().nextInt(howManyOptions);
+        if (index != -1 || objectsBoard[1][randomX] != null) {
+            while (objectsBoard[1].length == randomX || randomX == index || objectsBoard[1][randomX] != null) {
+                randomX = new Random().nextInt(howManyOptions + 1);
             }
         }
-        createObjects(xScale);
+        objectsBoard[1][randomX] = new Bird(randomX, 1);
+        emptyBoard = false;
+    }
+
+
+    /**
+     * Create new passenger
+     *
+     * @param howManyOptions == the limit on the x scale
+     */
+    private void createNewPassenger(int howManyOptions) {
+        int randomX = new Random().nextInt(howManyOptions);
+        while (objectsBoard[1][randomX] != null) {
+            randomX = new Random().nextInt(howManyOptions);
+        }
+        objectsBoard[1][randomX] = new Passenger(randomX, 1);
+        emptyBoard = false;
+    }
+
+    /**
+     * Check if we can create new bird this step
+     * (so that the player can continue to play without being disqualified)
+     *
+     * @param xScale the limit on the x scale
+     */
+    public void checkTheAbilityToCreateNewBird(int xScale) {
+        // Default value
+        int theLimitedIndex = -1;
+        if (emptyBoard == false) {
+
+            //Our indication if there can be a problem to create a new bird in certain spots
+            //The default is true
+            boolean canBeProblem = true;
+
+            //Checking one option [main diagonal]
+            for (int i = xScale - 1; i > 0; i--) {
+                if (!(objectsBoard[i + 1][i] instanceof Bird)) {
+                    canBeProblem = false;
+                    break;
+                }
+            }
+            if (canBeProblem == true) {
+                theLimitedIndex = 0;
+                createNewBird(theLimitedIndex, xScale);
+            } else {
+                canBeProblem = true;
+                //Checking second option [secondary diagonal]
+                for (int i = xScale - 1; i > 0; i--) {
+                    if (!(objectsBoard[i + 1][objectsBoard[i].length - 1 - i] instanceof Bird)) {
+                        canBeProblem = false;
+                        break;
+                    }
+                }
+                if (canBeProblem == true) {
+                    theLimitedIndex = xScale - 1;
+                    createNewBird(theLimitedIndex, xScale);
+                }
+            }
+        } else {
+            createNewBird(theLimitedIndex, xScale);
+        }
     }
 
     /**
@@ -107,6 +160,30 @@ public class GameManager {
     }
 
     /**
+     * Move all exists objects one step down
+     *
+     * @param boardLimit the limit to the objects on the board
+     */
+    public void moveObjectsDown(int boardLimit, int xScale) {
+        if (emptyBoard == false) {
+            for (int i = objectsBoard.length - 1; i >= 0; i--) {
+                for (int j = 0; j < objectsBoard[i].length; j++) {
+                    if (objectsBoard[i][j] != null && objectsBoard[i][j].getY() == boardLimit + 1) {
+                        objectsBoard[i][j] = null;
+                    } else if (objectsBoard[i][j] != null) {
+                        int tmpY = objectsBoard[i][j].getY() + 1;
+                        objectsBoard[i][j].setY(tmpY);
+                        objectsBoard[i + 1][j] = objectsBoard[i][j];
+                        objectsBoard[i][j] = null;
+                    }
+                }
+            }
+        }
+        createObjects(xScale);
+    }
+
+
+    /**
      * Clear the board from all objects
      */
     public void clearAllObjects() {
@@ -118,100 +195,6 @@ public class GameManager {
         emptyBoard = true;
     }
 
-    /**
-     * Check if we can create new bird this step
-     * (so that the player can continue to play without being disqualified)
-     *
-     * @param xScale the limit on the x scale
-     */
-    public void checkTheAbilityToCreateNewBird(int xScale) {
-        // Default value
-        int theLimitedIndex = -1;
-        if (emptyBoard == false) {
-
-            //Array list of all the x-scales of the potential problematic birds for creating a new one
-            ArrayList<Integer> checkList = new ArrayList<>();
-
-            //Our indication if there can be a problem to create a new bird in certain spots
-            boolean checking = true;
-
-            //Getting all the x-scales of the birds that currently on the board in the xScale - 1 first rows
-            for (int i = xScale - 1; i > 0; i--) {
-                for (int j = 0; j < objectsBoard[i].length; j++) {
-                    if (objectsBoard[i][j] instanceof Bird) {
-                        checkList.add(objectsBoard[i][j].getX());
-                        break;
-                    }
-                }
-            }
-
-            //Checking if there is possibility to problem to create new bird
-            if (checkList.size() == xScale - 1) {
-                //Checking one option [secondary diagonal]
-                if (checkList.get(0) == 0) {
-                    for (int i = 1; i < checkList.size(); i++) {
-                        if (checkList.get(i - 1) + 1 != checkList.get(i)) {
-                            checking = false;
-                            break;
-                        }
-                    }
-                    if (checking == true) {
-                        theLimitedIndex = xScale - 1;
-                    }
-                    createNewBird(theLimitedIndex, xScale);
-                }
-                // Checking second option[main diagonal]
-                else if (checkList.get(0) == xScale - 2) {
-                    for (int i = 1; i < checkList.size(); i++) {
-                        if (checkList.get(i - 1) - 1 != checkList.get(i)) {
-                            checking = false;
-                            break;
-                        }
-                    }
-                    if (checking == true) {
-                        theLimitedIndex = 0;
-                    }
-                    createNewBird(theLimitedIndex, xScale);
-                }
-            }
-        } else {
-            createNewBird(theLimitedIndex, xScale);
-        }
-    }
-
-    /**
-     * Create new bird
-     *
-     * @param index          == indicates if can be anywhere (-1) or can not be in specific place(!-1)
-     * @param howManyOptions == the limit on the x scale
-     */
-    public void createNewBird(int index, int howManyOptions) {
-        //The extra 1 is for the option to not create
-        int randomX = new Random().nextInt(howManyOptions);
-        if (index != -1 || objectsBoard[1][randomX] != null) {
-            while (objectsBoard[1].length == randomX || randomX == index || objectsBoard[1][randomX] != null) {
-                randomX = new Random().nextInt(howManyOptions + 1);
-            }
-        }
-        objectsBoard[1][randomX] = new Bird(randomX, 1);
-        emptyBoard = false;
-//        }
-    }
-
-
-    /**
-     * Create new passenger
-     *
-     * @param howManyOptions == the limit on the x scale
-     */
-    private void createNewPassenger(int howManyOptions) {
-        int randomX = new Random().nextInt(howManyOptions);
-        while (objectsBoard[1][randomX] != null) {
-            randomX = new Random().nextInt(howManyOptions);
-        }
-        objectsBoard[1][randomX] = new Passenger(randomX, 1);
-        emptyBoard = false;
-    }
 
     /**
      * Check if there is a clash between a bird and the plane

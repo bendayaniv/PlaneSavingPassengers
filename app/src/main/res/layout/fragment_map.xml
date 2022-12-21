@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.Fragments.MapFragment">
+    tools:context=".Controller.Fragments.MapFragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map_FCV_map"

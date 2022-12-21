@@ -3,8 +3,16 @@ package com.example.planesavingpassengers.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.planesavingpassengers.Models.ScoreList;
+import com.google.gson.Gson;
+
 public class MySP {
+
+    ////////////////////////////////////////////////////////////////////////////////////
     private static final String DB_FILE = "DB_FILE";
+
+    private static final String SP_KEY_SCORELIST = "SP_KEY_SCORELIST";
+    ////////////////////////////////////////////////////////////////////////////////////
 
     private static MySP instance = null;
     private static SharedPreferences preferences;
@@ -17,12 +25,24 @@ public class MySP {
         if (instance == null) {
             instance = new MySP(context);
         }
-        // To get remove from here when I will sure that it is not needed
-//        clearAll();
     }
 
     public static MySP getInstance() {
         return instance;
+    }
+
+    public static void saveToSP(ScoreList scoreList) {
+        String playersListJson = new Gson().toJson(scoreList);
+        getInstance().putString(SP_KEY_SCORELIST, playersListJson);
+    }
+
+    public static ScoreList loadFromSP(Class<ScoreList> scoreListClass, ScoreList scoreList) {
+        String playersListAsJsonStringFromSP = getInstance().getString(SP_KEY_SCORELIST, "");
+
+        if (!playersListAsJsonStringFromSP.isEmpty()) {
+            scoreList = new Gson().fromJson(playersListAsJsonStringFromSP, scoreListClass);
+        }
+        return scoreList;
     }
 
     public void putInt(String key, int value) {

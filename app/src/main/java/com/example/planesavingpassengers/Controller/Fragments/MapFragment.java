@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.Views.Fragments;
+package com.example.planesavingpassengers.Controller.Fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,17 +40,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * Add marker to the map
-     *
-     * @param lat == latitude
-     * @param lng == longitude
-     */
-    public void addMarkOnMap(double lat, double lng) {
-        LatLng randomPlace = new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions().position(randomPlace));
-    }
-
-    /**
      * Move the camera to the given location
      *
      * @param _latitude  == latitude
@@ -77,14 +66,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * Add markers on the map
+     * Refresh the map with the new list of players
      */
     public void refreshMarkerOnMap() {
         mMap.clear();
         for (Player player : players) {
-//            LatLng randomPlace = new LatLng(player.getLatitude(), player.getLongitude());
-//            mMap.addMarker(new MarkerOptions().position(randomPlace));
-            addMarkOnMap(player.getLatitude(), player.getLongitude());
+            LatLng randomPlace = new LatLng(player.getLatitude(), player.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(randomPlace));
         }
     }
 
@@ -98,9 +86,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         if (players != null) {
             refreshMarkerOnMap();
-//            for (Player player : players) {
-//                addMarkOnMap(player.getLatitude(), player.getLongitude());
-//            }
         }
     }
 

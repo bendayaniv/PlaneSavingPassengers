@@ -9,8 +9,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    /////////////////////////////////////////////////////////////////////////
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    ///////////////////////////////////////////////////////////////////////
+
     <application
-        android:name=".App"
+        android:name=".Utils.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -28,28 +33,28 @@
             android:value="AIzaSyAjS0X09X9MQcj3_7H5QsfdDUarfiHHEH0" />
 
         <activity
-            android:name=".Views.Fragments.MapFragment"
+            android:name=".Controller.Fragments.MapFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Views.Fragments.ListFragment"
+            android:name=".Controller.Fragments.ListFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Views.Activities.ScoresActivity"
+            android:name=".Controller.Activities.ScoresActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Views.Activities.MenuActivity"
+            android:name=".Controller.Activities.MenuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,7 +67,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Views.Activities.GameActivity"
+            android:name=".Controller.Activities.GameActivity"
             android:exported="false">
 
             <!-- <intent-filter> -->

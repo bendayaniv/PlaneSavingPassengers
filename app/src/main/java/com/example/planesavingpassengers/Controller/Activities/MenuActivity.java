@@ -1,4 +1,4 @@
-package com.example.planesavingpassengers.Views.Activities;
+package com.example.planesavingpassengers.Controller.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,8 +15,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
 public class MenuActivity extends AppCompatActivity {
-
-//    public static final String INDICATION = "INDICATION";
 
     private MaterialTextView menu_LBL_headline;
     private MaterialButton menu_LBL_startGame;
@@ -38,14 +36,14 @@ public class MenuActivity extends AppCompatActivity {
         //Set direction on all devices from LEFT to RIGHT
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
-//        while (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//        }
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         findViews();
 
         menu_LBL_headline.setText("Save the Passengers!");
         menuButtons();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 
     /**
@@ -57,36 +55,6 @@ public class MenuActivity extends AppCompatActivity {
         menu_LBL_scores = findViewById(R.id.menu_LBL_scores);
         menu_SWITCH_btn = findViewById(R.id.menu_SWITCH_btn);
         menu_SWITCH_speed = findViewById(R.id.menu_SWITCH_speed);
-    }
-
-    /**
-     * This method sets the buttons in the activity
-     */
-    private void menuButtons() {
-        menu_LBL_startGame.setOnClickListener(v -> openGameActivity());
-        menu_LBL_scores.setOnClickListener(v -> openScoresActivity());
-    }
-
-    /**
-     * This method opens the score activity
-     */
-    private void openScoresActivity() {
-        Intent scoresIntent = new Intent(this, ScoresActivity.class);
-        scoresIntent.putExtra(ScoresActivity.INDICATION, false);
-        startActivity(scoresIntent);
-        finish();
-    }
-
-    /**
-     * This method opens the game activity
-     */
-    private void openGameActivity() {
-        Intent gameIntent = new Intent(this, GameActivity.class);
-        setDetails();
-        gameIntent.putExtra(GameActivity.KEY_DELAY, DELAY);
-        gameIntent.putExtra(GameActivity.KEY_BUTTONS, buttonsEnabled);
-        startActivity(gameIntent);
-        finish();
     }
 
     /**
@@ -104,5 +72,35 @@ public class MenuActivity extends AppCompatActivity {
         } else {
             buttonsEnabled = true;
         }
+    }
+
+    /**
+     * This method opens the game activity
+     */
+    private void openGameActivity() {
+        Intent gameIntent = new Intent(this, GameActivity.class);
+        setDetails();
+        gameIntent.putExtra(GameActivity.KEY_DELAY, DELAY);
+        gameIntent.putExtra(GameActivity.KEY_BUTTONS, buttonsEnabled);
+        startActivity(gameIntent);
+        finish();
+    }
+
+    /**
+     * This method opens the score activity
+     */
+    private void openScoresActivity() {
+        Intent scoresIntent = new Intent(this, ScoresActivity.class);
+        scoresIntent.putExtra(ScoresActivity.INDICATION, false);
+        startActivity(scoresIntent);
+        finish();
+    }
+
+    /**
+     * This method sets the buttons in the activity
+     */
+    private void menuButtons() {
+        menu_LBL_startGame.setOnClickListener(v -> openGameActivity());
+        menu_LBL_scores.setOnClickListener(v -> openScoresActivity());
     }
 }

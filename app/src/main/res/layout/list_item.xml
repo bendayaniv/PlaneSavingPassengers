@@ -10,7 +10,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tvProduct"
+            android:id="@+id/listItem_name"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -21,7 +21,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvQty"
+            android:id="@+id/listItem_score"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
