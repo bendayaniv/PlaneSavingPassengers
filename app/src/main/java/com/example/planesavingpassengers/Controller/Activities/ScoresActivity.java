@@ -102,7 +102,6 @@ public class ScoresActivity extends AppCompatActivity {
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(500);
         locationRequest.setFastestInterval(200);
-        getCurrentLocation();
 
         Intent prevIntent = getIntent();
         score = prevIntent.getIntExtra(KEY_SCORE, 0);
