@@ -13,9 +13,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.planesavingpassengers.Utils.BackgroundSoundService;
 import com.example.planesavingpassengers.Models.GameManager;
 import com.example.planesavingpassengers.Models.Objects.Object;
+import com.example.planesavingpassengers.Utils.FlightBackgroundSoundService;
 import com.example.planesavingpassengers.Utils.MovementDetector;
 import com.example.planesavingpassengers.R;
 import com.example.planesavingpassengers.Interfaces.MovementCallback;
@@ -59,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
     long startTime = 0;
 
     private Intent scoresIntent;
-    private Intent BackgroundSoundIntent;
+    private Intent flightBackgroundSoundIntent;
 
     private MovementDetector movementDetector;
 
@@ -74,7 +74,6 @@ public class GameActivity extends AppCompatActivity {
         playBackgroundSound();
 
         findViews();
-
 
         gameManager = new GameManager(game_IMG_hearts.length, Y_LENGTH, X_LENGTH, DEFAULT_X_FOR_PLANE, PLANE_LINE);
 
@@ -99,8 +98,8 @@ public class GameActivity extends AppCompatActivity {
      * This methos plays the background sound
      */
     public void playBackgroundSound() {
-        BackgroundSoundIntent = new Intent(GameActivity.this, BackgroundSoundService.class);
-        startService(BackgroundSoundIntent);
+        flightBackgroundSoundIntent = new Intent(GameActivity.this, FlightBackgroundSoundService.class);
+        startService(flightBackgroundSoundIntent);
     }
 
     /**
@@ -401,7 +400,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startService(BackgroundSoundIntent);
+        startService(flightBackgroundSoundIntent);
         startCheckHitTimer();
         startMovingObjectsTimer();
         if (buttonsEnabled == false) {
@@ -412,7 +411,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        stopService(BackgroundSoundIntent);
+        stopService(flightBackgroundSoundIntent);
         stopTimers();
         if (buttonsEnabled == false) {
             movementDetector.stop();
@@ -422,7 +421,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopService(BackgroundSoundIntent);
+        stopService(flightBackgroundSoundIntent);
         stopTimers();
         if (buttonsEnabled == false) {
             movementDetector.stop();

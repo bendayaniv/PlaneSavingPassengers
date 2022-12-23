@@ -82,7 +82,7 @@
                 android:value="" />
         </activity>
 
-        <service android:name=".Utils.BackgroundSoundService" />
+        <service android:name=".Utils.FlightBackgroundSoundService" />
     </application>
 
 </manifest>

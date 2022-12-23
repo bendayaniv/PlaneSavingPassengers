@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.example.planesavingpassengers.R;
 
-public class BackgroundSoundService extends Service {
+public class FlightBackgroundSoundService extends Service {
     MediaPlayer mediaPlayer;
 
     @Nullable

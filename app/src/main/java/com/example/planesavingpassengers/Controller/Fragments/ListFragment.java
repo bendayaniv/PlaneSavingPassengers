@@ -112,12 +112,21 @@ public class ListFragment extends Fragment {
         }
     }
 
+    public void reducingList() {
+        if (scoreList.getPlayers().size() > 10) {
+            for (int i = 10; i < scoreList.getPlayers().size(); i++) {
+                scoreList.getPlayers().remove(i);
+            }
+        }
+    }
+
     /**
      * Load the score list from shared preferences
      */
     private void loadFromSP() {
         scoreList = MySP.loadFromSP(ScoreList.class, scoreList);
         if (!scoreList.getPlayers().isEmpty()) {
+            reducingList();
             sendThePlayerList(scoreList.getPlayers());
         }
     }
@@ -126,6 +135,7 @@ public class ListFragment extends Fragment {
      * Save the score list to shared preferences
      */
     public void saveToSP() {
+        reducingList();
         MySP.saveToSP(scoreList);
         sendThePlayerList(scoreList.getPlayers());
     }
@@ -133,7 +143,8 @@ public class ListFragment extends Fragment {
     /**
      * This method put the new player in the list,
      * sort the list by score,
-     * remove the last player if the list is bigger than 10 (the 11th player)
+     * leaving only the first 10 in the list,
+     * check if the new player is on the list
      * and save the list in the shared preferences
      *
      * @param player == the new player
@@ -143,17 +154,12 @@ public class ListFragment extends Fragment {
         boolean inTop10 = false;
         scoreList.getPlayers().add(player);
         scoreList.sortListByScore();
-
-        if (scoreList.getPlayers().size() > 10 && scoreList.getPlayers().get(10) == player) {
-            scoreList.getPlayers().remove(10);
-        } else {
+        reducingList();
+        if (scoreList.getPlayers().contains(player)) {
             inTop10 = true;
         }
-
         initPlayerAdapter();
-
         saveToSP();
-
         return inTop10;
     }
 }
